@@ -1,33 +1,33 @@
 <template>
   <div class="d-flex flex-column flex-shrink-0 p-3 bg-light" style="width: 25%;">
-    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+    <a href="/" class="d-flex align-items-center mb-3 mb-md-auto me-md-auto link-dark text-decoration-none">
       <span class="fs-4">Меню</span>
     </a>
     <hr>
     <ul class="nav nav-pills flex-column mb-auto">
       <li class="nav-item">
-        <a href="#" class="nav-link active" aria-current="page">
+        <router-link to="/users" class="nav-link" active-class="active">
           <i class="bi bi-house"></i>
           Пользователи
-        </a>
+        </router-link>
       </li>
       <li>
-        <a href="#" class="nav-link link-dark">
+        <router-link to="/deposits" class="nav-link" active-class="active">
           <i class="bi bi-people"></i>
-          Пользователи
-        </a>
+          Депозиты
+        </router-link>
       </li>
       <li>
-        <a href="#" class="nav-link link-dark">
+        <router-link to="/withdrawals" class="nav-link" active-class="active">
           <i class="bi bi-card-checklist"></i>
-          Транзакции
-        </a>
+          Выводы
+        </router-link>
       </li>
       <li>
-        <a href="#" class="nav-link link-dark">
+        <router-link to="/statistics" class="nav-link" active-class="active">
           <i class="bi bi-bar-chart"></i>
           Статистика
-        </a>
+        </router-link>
       </li>
     </ul>
     <hr>

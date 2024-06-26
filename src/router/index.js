@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import AdminPanel from '@/components/AdminPanel.vue';
 import UsersTable from '@/components/UsersTable.vue';
+import Deposits from '@/components/Deposits.vue';
+import UserCard from '@/components/UserCard.vue';
 
 const routes = [
     {
@@ -12,6 +14,16 @@ const routes = [
         path: '/users',
         name: 'UsersTable',
         component: UsersTable
+    },
+    {
+        path: '/deposits',
+        name: 'Deposits',
+        component: Deposits
+    },
+    {
+        path: '/user/:id',
+        name: 'UserCard',
+        component: UserCard
     }
 ];
 
