@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 import hashlib
-from app.database import engine, Base, SessionLocal
+from app.database import engine, Base
 from app.models import Admin
 from app.cors import add_cors_middleware
 

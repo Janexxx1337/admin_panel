@@ -6,18 +6,26 @@
       </div>
       <div class="card-body">
         <div class="row mb-3">
-          <div class="col-4 text-right font-weight-bold"><strong>ID:</strong></div>
+          <div class="col-4 text-right font-weight-bold">ID:</div>
           <div class="col-8">{{ user.id }}</div>
         </div>
         <div class="row mb-3">
-          <div class="col-4 text-right font-weight-bold"><strong>Баланс:</strong></div>
+          <div class="col-4 text-right font-weight-bold">Баланс:</div>
           <div class="col-8">{{ user.balance }}</div>
         </div>
         <div class="row mb-3">
-          <div class="col-4 text-right font-weight-bold"><strong>Статус оплаты:</strong></div>
+          <div class="col-4 text-right font-weight-bold">Статус оплаты:</div>
           <div class="col-8">
             <span :class="{'badge bg-success': user.payment_status === 'completed', 'badge bg-warning': user.payment_status === 'pending'}">
               {{ user.payment_status }}
+            </span>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-4 text-right font-weight-bold">Статус бана:</div>
+          <div class="col-8">
+            <span :class="{'badge bg-danger': user.banned, 'badge bg-success': !user.banned}">
+              {{ user.banned ? 'Забанен' : 'Активен' }}
             </span>
           </div>
         </div>
@@ -38,8 +46,35 @@
           </tr>
           </tbody>
         </table>
+        <h3 class="mt-4">Выводы предметов</h3>
+        <table class="table table-hover mt-3">
+          <thead class="thead-light">
+          <tr>
+            <th scope="col">Предмет</th>
+            <th scope="col">Статус</th>
+            <th scope="col">Дата запроса</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr v-for="withdrawal in user.withdrawals" :key="withdrawal.id">
+            <td>{{ withdrawal.item_name }}</td>
+            <td>{{ withdrawal.status }}</td>
+            <td>{{ new Date(withdrawal.request_date).toLocaleDateString() }}</td>
+          </tr>
+          </tbody>
+        </table>
+        <div class="balance-management">
+          <h3 class="mt-4">Управление балансом</h3>
+          <div class="input-group mb-3">
+            <input type="number" v-model="balanceAmount" class="form-control" placeholder="Сумма" aria-label="Сумма">
+            <div class="input-group-append">
+              <button class="btn btn-success" @click="updateBalance('credit')">Начислить баланс</button>
+              <button class="btn btn-warning" @click="updateBalance('debit')">Списать с баланса</button>
+            </div>
+          </div>
+        </div>
         <div class="text-center mt-4">
-          <button class="btn btn-danger" @click="banUser">Забанить пользователя</button>
+          <button class="btn btn-danger mb-3" @click="banUser">Забанить пользователя</button>
         </div>
       </div>
     </div>
@@ -56,6 +91,7 @@ import { useRoute, useRouter } from 'vue-router';
 const route = useRoute();
 const router = useRouter();
 const user = ref(null);
+const balanceAmount = ref(0);
 
 const fetchUser = async (userId) => {
   try {
@@ -81,6 +117,25 @@ const banUser = async () => {
     router.push('/users');
   } catch (error) {
     console.error('Error banning user:', error);
+  }
+};
+
+const updateBalance = async (action) => {
+  try {
+    const response = await fetch(`http://localhost:8000/users/${user.value.id}/balance`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ amount: parseFloat(balanceAmount.value), action })
+    });
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const updatedUser = await response.json();
+    user.value.balance = updatedUser.balance;
+  } catch (error) {
+    console.error('Error updating balance:', error);
   }
 };
 
@@ -146,5 +201,13 @@ onMounted(() => {
 
 .font-weight-bold {
   font-weight: bold;
+}
+
+.balance-management .input-group {
+  margin-top: 20px;
+}
+
+.balance-management .input-group-append button {
+  margin-left: 10px;
 }
 </style>

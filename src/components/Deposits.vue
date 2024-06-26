@@ -17,7 +17,7 @@
         </td>
         <td>{{ deposit.provider }}</td>
         <td>{{ new Date(deposit.date).toLocaleDateString() }}</td>
-        <td>{{ deposit.user_id }}</td>
+        <td>{{ deposit.user_nickname }}</td>
       </tr>
       </tbody>
     </table>

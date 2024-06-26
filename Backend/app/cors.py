@@ -1,5 +1,9 @@
 from fastapi.middleware.cors import CORSMiddleware
 
+origins = [
+    "http://localhost:5174",  # Добавьте все допустимые источники
+    "http://localhost:8000",
+]
 def add_cors_middleware(app):
     app.add_middleware(
         CORSMiddleware,
