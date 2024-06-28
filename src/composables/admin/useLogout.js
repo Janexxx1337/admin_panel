@@ -11,7 +11,7 @@ export function useAuth() {
             });
 
             if (response.ok) {
-                router.push('/admin');
+                window.location.href = '/admin';
             } else {
                 console.error('Failed to logout');
             }

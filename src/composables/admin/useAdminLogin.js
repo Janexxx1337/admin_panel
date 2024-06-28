@@ -29,8 +29,8 @@ export function useAdminLogin() {
             const data = await response.json();
             successMessage.value = data.message;
 
-            // После успешного входа перенаправляем на страницу /users
-            router.push('/users');
+            // После успешного входа перезагружаем страницу
+            window.location.href = '/users';
         } catch (err) {
             error.value = 'Failed to login: ' + err.message;
         }
