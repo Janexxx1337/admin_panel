@@ -20,7 +20,7 @@
 </template>
 
 <script setup>
-import { useAdminLogin } from '@/composables/admin/useAdminLogin';
+import { useAdminLogin } from '@/composables/admin/useAdminLogin.js';
 
 const { username, password, error, successMessage, login } = useAdminLogin();
 </script>

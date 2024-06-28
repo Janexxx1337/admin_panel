@@ -117,7 +117,7 @@
 <script setup>
 import { onMounted } from 'vue';
 import { useRoute } from 'vue-router';
-import { useUser } from '@/composables/users/card/useUser';
+import { useUser } from '@/composables/users/card/useUser.js';
 
 const route = useRoute();
 const { user, balanceAmount, fetchUser, banUser, updateBalance } = useUser();

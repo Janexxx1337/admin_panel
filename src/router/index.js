@@ -1,15 +1,15 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import AdminPanel from '@/components/AdminPanel.vue';
-import UsersTable from '@/components/UsersTable.vue';
-import Deposits from '@/components/Deposits.vue';
-import UserCard from '@/components/UserCard.vue';
-import Withdrawals from '@/components/Withdrawals.vue';
+import Login from '@/components/views/Login.vue';
+import UsersTable from '@/components/views/UsersTable.vue';
+import Deposits from '@/components/views/Deposits.vue';
+import UserCard from '@/components/views/UserCard.vue';
+import Withdrawals from '@/components/views/Withdrawals.vue';
 
 const routes = [
     {
         path: '/admin',
-        name: 'AdminPanel',
-        component: AdminPanel,
+        name: 'Login',
+        component: Login,
     },
     {
         path: '/withdrawals',
@@ -45,7 +45,7 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
     const response = await fetch('http://localhost:8000/admin/me', {
         method: 'GET',
-        credentials: 'include', // This will include the cookies in the request
+        credentials: 'include',
     });
 
     const isAuthenticated = response.ok;

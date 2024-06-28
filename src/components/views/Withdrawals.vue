@@ -57,7 +57,7 @@
 
 <script setup>
 import { ref, onMounted, watch } from 'vue';
-import Pagination from '@/components/Pagination.vue';
+import Pagination from '@/components/ui-kit/Pagination.vue';
 
 const withdrawals = ref([]);
 const filteredWithdrawals = ref([]);

@@ -44,8 +44,8 @@
 </template>
 
 <script setup>
-import Pagination from '@/components/Pagination.vue';
-import { useDeposits } from '@/composables/users/deposits/useDeposits';
+import Pagination from '@/components/ui-kit/Pagination.vue';
+import { useDeposits } from '@/composables/users/deposits/useDeposits.js';
 
 const {
   currentPage,

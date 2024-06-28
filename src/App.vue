@@ -7,7 +7,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import Sidebar from '@/components/Sidebar.vue';
+import Sidebar from '@/components/ui-kit/Sidebar.vue';
 import { useRouter } from 'vue-router';
 
 const isAuthenticated = ref(false);
