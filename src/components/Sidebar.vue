@@ -43,26 +43,9 @@
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router';
+import {useAuth} from "@/composables/admin/useLogout.js";
 
-const router = useRouter();
-
-async function logout() {
-  try {
-    const response = await fetch('http://localhost:8000/admin/logout', {
-      method: 'POST',
-      credentials: 'include'
-    });
-
-    if (response.ok) {
-      router.push('/admin');
-    } else {
-      console.error('Failed to logout');
-    }
-  } catch (err) {
-    console.error('Error during logout:', err);
-  }
-}
+const { logout } = useAuth();
 </script>
 
 <style scoped>
