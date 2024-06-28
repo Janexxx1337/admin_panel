@@ -1,6 +1,21 @@
 <template>
   <div class="container mt-4">
     <h1 class="mb-4">Депозиты</h1>
+
+    <!-- Поле поиска и фильтрации -->
+    <div class="mb-3 d-flex justify-content-between">
+      <input
+          v-model="searchQuery"
+          type="text"
+          class="form-control w-25"
+          placeholder="Поиск по пользователю"
+      >
+      <select v-model="filterProvider" class="form-select w-25">
+        <option value="">Все провайдеры</option>
+        <option v-for="provider in uniqueProviders" :key="provider" :value="provider">{{ provider }}</option>
+      </select>
+    </div>
+
     <table class="table table-hover">
       <thead class="thead-dark">
       <tr>
@@ -11,7 +26,7 @@
       </tr>
       </thead>
       <tbody>
-      <tr v-for="deposit in paginatedDeposits" :key="deposit.id">
+      <tr v-for="deposit in filteredDeposits" :key="deposit.id">
         <td>
           <span class="badge bg-info text-dark">{{ deposit.amount }}$</span>
         </td>
@@ -30,7 +45,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import {ref, computed, onMounted} from 'vue';
 import Pagination from '@/components/Pagination.vue';
 
 const deposits = ref([]);
@@ -38,6 +53,8 @@ const paginatedDeposits = ref([]);
 const currentPage = ref(1);
 const itemsPerPage = 10;
 const totalPages = ref(0);
+const searchQuery = ref('');
+const filterProvider = ref('');
 
 const fetchDeposits = async (page = 1) => {
   currentPage.value = page;
@@ -62,6 +79,20 @@ const updatePaginatedDeposits = () => {
   paginatedDeposits.value = deposits.value.slice(start, end);
 };
 
+const uniqueProviders = computed(() => {
+  const providers = deposits.value.map(deposit => deposit.provider);
+  return [...new Set(providers)];
+});
+
+const filteredDeposits = computed(() => {
+  return paginatedDeposits.value.filter(deposit => {
+    return (
+        deposit.user_nickname.toLowerCase().includes(searchQuery.value.toLowerCase()) &&
+        (filterProvider.value === '' || deposit.provider === filterProvider.value)
+    );
+  });
+});
+
 onMounted(() => {
   fetchDeposits();
 });
@@ -71,6 +102,7 @@ onMounted(() => {
 .table th, .table td {
   vertical-align: middle;
 }
+
 .badge {
   font-size: 1rem;
 }

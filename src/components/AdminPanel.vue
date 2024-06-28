@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex justify-content-center align-items-center vh-100">
+  <div class="d-flex justify-content-center align-items-center vh-100 position-absolute log-form">
     <div class="card p-4" style="width: 400px;">
       <div class="card-body">
         <h1 class="card-title text-center mb-4">Вход</h1>
@@ -28,5 +28,11 @@ const { username, password, error, successMessage, login } = useAdminLogin();
 <style scoped>
 .card {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.log-form {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 </style>

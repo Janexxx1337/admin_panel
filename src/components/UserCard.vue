@@ -5,76 +5,106 @@
         <h2 class="card-title mt-3">{{ user.nickname }}</h2>
       </div>
       <div class="card-body">
-        <div class="row mb-3">
-          <div class="col-4 text-right font-weight-bold">ID:</div>
-          <div class="col-8">{{ user.id }}</div>
-        </div>
-        <div class="row mb-3">
-          <div class="col-4 text-right font-weight-bold">Баланс:</div>
-          <div class="col-8">{{ user.balance }}</div>
-        </div>
-        <div class="row mb-3">
-          <div class="col-4 text-right font-weight-bold">Статус оплаты:</div>
-          <div class="col-8">
-            <span :class="{'badge bg-success': user.payment_status === 'completed', 'badge bg-warning': user.payment_status === 'pending'}">
-              {{ user.payment_status }}
-            </span>
-          </div>
-        </div>
-        <div class="row mb-3">
-          <div class="col-4 text-right font-weight-bold">Статус бана:</div>
-          <div class="col-8">
-            <span :class="{'badge bg-danger': user.banned, 'badge bg-success': !user.banned}">
-              {{ user.banned ? 'Забанен' : 'Активен' }}
-            </span>
-          </div>
-        </div>
-        <h3 class="mt-4">Депозиты</h3>
-        <table class="table table-hover mt-3">
-          <thead class="thead-light">
-          <tr>
-            <th scope="col">Сумма</th>
-            <th scope="col">Дата</th>
-            <th scope="col">Провайдер</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr v-for="deposit in user.deposits" :key="deposit.id">
-            <td>{{ deposit.amount }}$</td>
-            <td>{{ new Date(deposit.date).toLocaleDateString() }}</td>
-            <td>{{ deposit.provider }}</td>
-          </tr>
-          </tbody>
-        </table>
-        <h3 class="mt-4">Выводы предметов</h3>
-        <table class="table table-hover mt-3">
-          <thead class="thead-light">
-          <tr>
-            <th scope="col">Предмет</th>
-            <th scope="col">Статус</th>
-            <th scope="col">Дата запроса</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr v-for="withdrawal in user.withdrawals" :key="withdrawal.id">
-            <td>{{ withdrawal.item_name }}</td>
-            <td>{{ withdrawal.status }}</td>
-            <td>{{ new Date(withdrawal.request_date).toLocaleDateString() }}</td>
-          </tr>
-          </tbody>
-        </table>
-        <div class="balance-management">
-          <h3 class="mt-4">Управление балансом</h3>
-          <div class="input-group mb-3">
-            <input type="number" v-model="balanceAmount" class="form-control" placeholder="Сумма" aria-label="Сумма">
-            <div class="input-group-append">
-              <button class="btn btn-success" @click="updateBalance('credit')">Начислить баланс</button>
-              <button class="btn btn-warning" @click="updateBalance('debit')">Списать с баланса</button>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="card mb-3">
+              <div class="card-body">
+                <h5 class="card-title">Информация о пользователе</h5>
+                <p class="card-text"><strong>ID:</strong> {{ user.id }}</p>
+                <p class="card-text"><strong>Баланс:</strong> {{ user.balance }}</p>
+                <p class="card-text"><strong>Статус оплаты:</strong>
+                  <span :class="{'badge bg-success': user.payment_status === 'completed', 'badge bg-warning': user.payment_status === 'pending'}">
+                    {{ user.payment_status }}
+                  </span>
+                </p>
+                <p class="card-text"><strong>Статус бана:</strong>
+                  <span :class="{'badge bg-danger': user.banned, 'badge bg-success': !user.banned}">
+                    {{ user.banned ? 'Забанен' : 'Активен' }}
+                  </span>
+                </p>
+                <div class="text-center">
+                  <button class="btn btn-danger mb-3" @click="banUser">Забанить пользователя</button>
+                </div>
+              </div>
+            </div>
+            <div class="card mb-3">
+              <div class="card-body">
+                <h5 class="card-title">Управление балансом</h5>
+                <div class="input-group mb-3">
+                  <input type="number" v-model="balanceAmount" class="form-control" placeholder="Сумма" aria-label="Сумма">
+                  <div class="input-group-append">
+                    <button class="btn btn-success" @click="updateBalance('credit')">Начислить баланс</button>
+                    <button class="btn btn-warning" @click="updateBalance('debit')">Списать с баланса</button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="text-center mt-4">
-          <button class="btn btn-danger mb-3" @click="banUser">Забанить пользователя</button>
+          <div class="col-md-6">
+            <div class="card mb-3">
+              <div class="card-body">
+                <h5 class="card-title">Депозиты</h5>
+                <table class="table table-hover mt-3">
+                  <thead class="thead-light">
+                  <tr>
+                    <th scope="col">Сумма</th>
+                    <th scope="col">Дата</th>
+                    <th scope="col">Провайдер</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr v-for="deposit in user.deposits" :key="deposit.id">
+                    <td>{{ deposit.amount }}$</td>
+                    <td>{{ new Date(deposit.date).toLocaleDateString() }}</td>
+                    <td>{{ deposit.provider }}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="card mb-3">
+              <div class="card-body">
+                <h5 class="card-title">Выводы предметов</h5>
+                <table class="table table-hover mt-3">
+                  <thead class="thead-light">
+                  <tr>
+                    <th scope="col">Предмет</th>
+                    <th scope="col">Статус</th>
+                    <th scope="col">Дата запроса</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr v-for="withdrawal in user.withdrawals" :key="withdrawal.id">
+                    <td>{{ withdrawal.item_name }}</td>
+                    <td>{{ withdrawal.status }}</td>
+                    <td>{{ new Date(withdrawal.request_date).toLocaleDateString() }}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="card mb-3">
+              <div class="card-body">
+                <h5 class="card-title">Ставки</h5>
+                <table class="table table-hover mt-3">
+                  <thead class="thead-light">
+                  <tr>
+                    <th scope="col">Игра</th>
+                    <th scope="col">Исход</th>
+                    <th scope="col">Сумма</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr v-for="bet in user.bets" :key="bet.id">
+                    <td>{{ bet.game_name }}</td>
+                    <td>{{ bet.outcome }}</td>
+                    <td>{{ bet.amount }}$</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -145,6 +175,7 @@ onMounted(() => {
 });
 </script>
 
+
 <style scoped>
 .container {
   margin-top: 20px;
@@ -191,19 +222,8 @@ onMounted(() => {
   color: #333;
 }
 
-.text-right {
-  text-align: right;
-}
 
 .btn {
-  margin-top: 20px;
-}
-
-.font-weight-bold {
-  font-weight: bold;
-}
-
-.balance-management .input-group {
   margin-top: 20px;
 }
 
