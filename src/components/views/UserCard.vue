@@ -2,7 +2,10 @@
   <div class="container mt-4">
     <div v-if="user" class="card shadow-sm">
       <div class="card-header bg-light text-center">
-        <h2 class="card-title mt-3">{{ user.nickname }}</h2>
+        <div class="user-info">
+          <svg xmlns="http://www.w3.org/2000/svg" height="34px" viewBox="0 -960 960 960" width="34px" fill="#e8eaed"><path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Zm80-80h480v-32q0-11-5.5-20T700-306q-54-27-109-40.5T480-360q-56 0-111 13.5T260-306q-9 5-14.5 14t-5.5 20v32Zm240-320q33 0 56.5-23.5T560-640q0-33-23.5-56.5T480-720q-33 0-56.5 23.5T400-640q0 33 23.5 56.5T480-560Zm0-80Zm0 400Z"/></svg>
+          <h2 class="card-title mt-3">{{ user.nickname }}</h2>
+        </div>
       </div>
       <div class="card-body">
         <div class="row">
@@ -155,6 +158,20 @@ onMounted(() => {
   background-color: #f8f9fa;
   padding: 20px;
   border-bottom: 1px solid #e9ecef;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.user-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 10px;
 }
 
 .card-title {

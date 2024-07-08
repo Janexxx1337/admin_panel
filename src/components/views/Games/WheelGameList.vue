@@ -2,137 +2,152 @@
   <div class="container mt-4">
     <h1>Wheel Games</h1>
 
-    <h2>Completed Games</h2>
-    <table class="table table-striped table-hover table-bordered">
-      <thead class="thead-dark">
-      <tr>
-        <th>Game ID</th>
-        <th>Date</th>
-        <th>Bank</th>
-        <th>Players</th>
-        <th>X2 Amount</th>
-        <th>X3 Amount</th>
-        <th>X5 Amount</th>
-        <th>X50 Amount</th>
-        <th>Details</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr v-for="game in completedGames" :key="game.id">
-        <td>{{ game.game_id }}</td>
-        <td>{{ new Date(game.date).toLocaleString() }}</td>
-        <td>{{ game.bank }}</td>
-        <td>{{ game.players }}</td>
-        <td>
-          <div v-for="(item, index) in game.x2_wins.slice(0, 2)" :key="index" class="item">
-            <img :src="item.image_url" :alt="item.name" class="item-image" @error="imageError" />
-            <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
-          </div>
-          <div v-if="game.x2_wins.length > 2" class="item-more">
-            +{{ game.x2_wins.length - 2 }} more
-          </div>
-        </td>
-        <td>
-          <div v-for="(item, index) in game.x3_wins.slice(0, 2)" :key="index" class="item">
-            <img :src="item.image_url" :alt="item.name" class="item-image" @error="imageError" />
-            <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
-          </div>
-          <div v-if="game.x3_wins.length > 2" class="item-more">
-            +{{ game.x3_wins.length - 2 }} more
-          </div>
-        </td>
-        <td>
-          <div v-for="(item, index) in game.x5_wins.slice(0, 2)" :key="index" class="item">
-            <img :src="item.image_url" :alt="item.name" class="item-image" @error="imageError" />
-            <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
-          </div>
-          <div v-if="game.x5_wins.length > 2" class="item-more">
-            +{{ game.x5_wins.length - 2 }} more
-          </div>
-        </td>
-        <td>
-          <div v-for="(item, index) in game.x50_wins.slice(0, 2)" :key="index" class="item">
-            <img :src="item.image_url" :alt="item.name" class="item-image" @error="imageError" />
-            <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
-          </div>
-          <div v-if="game.x50_wins.length > 2" class="item-more">
-            +{{ game.x50_wins.length - 2 }} more
-          </div>
-        </td>
-        <td>
-          <button @click="openModal(game)" class="btn btn-primary">
-            Детали
-          </button>
-        </td>
-      </tr>
-      </tbody>
-    </table>
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a class="nav-link" :class="{ active: activeTab === 'completed' }" @click="activeTab = 'completed'">Completed Games</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" :class="{ active: activeTab === 'active' }" @click="activeTab = 'active'">Active Games</a>
+      </li>
+    </ul>
 
-    <h2 class="mt-5">Active Games</h2>
-    <table class="table table-striped table-hover table-bordered">
-      <thead class="thead-dark">
-      <tr>
-        <th>Game ID</th>
-        <th>Date</th>
-        <th>Bank</th>
-        <th>Players</th>
-        <th>X2 Amount</th>
-        <th>X3 Amount</th>
-        <th>X5 Amount</th>
-        <th>X50 Amount</th>
-        <th>Details</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr v-for="game in activeGames" :key="game.id">
-        <td>{{ game.game_id }}</td>
-        <td>{{ new Date(game.date).toLocaleString() }}</td>
-        <td>{{ game.bank }}</td>
-        <td>{{ game.players }}</td>
-        <td>
-          <div v-for="(item, index) in game.x2_wins.slice(0, 2)" :key="index" class="item">
-            <img :src="item.image_url" :alt="item.name" class="item-image" @error="imageError" />
-            <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
-          </div>
-          <div v-if="game.x2_wins.length > 2" class="item-more">
-            +{{ game.x2_wins.length - 2 }} more
-          </div>
-        </td>
-        <td>
-          <div v-for="(item, index) in game.x3_wins.slice(0, 2)" :key="index" class="item">
-            <img :src="item.image_url" :alt="item.name" class="item-image" @error="imageError" />
-            <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
-          </div>
-          <div v-if="game.x3_wins.length > 2" class="item-more">
-            +{{ game.x3_wins.length - 2 }} more
-          </div>
-        </td>
-        <td>
-          <div v-for="(item, index) in game.x5_wins.slice(0, 2)" :key="index" class="item">
-            <img :src="item.image_url" :alt="item.name" class="item-image" @error="imageError" />
-            <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
-          </div>
-          <div v-if="game.x5_wins.length > 2" class="item-more">
-            +{{ game.x5_wins.length - 2 }} more
-          </div>
-        </td>
-        <td>
-          <div v-for="(item, index) in game.x50_wins.slice(0, 2)" :key="index" class="item">
-            <img :src="item.image_url" :alt="item.name" class="item-image" @error="imageError" />
-            <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
-          </div>
-          <div v-if="game.x50_wins.length > 2" class="item-more">
-            +{{ game.x50_wins.length - 2 }} more
-          </div>
-        </td>
-        <td>
-          <button @click="openModal(game)" class="btn btn-primary">
-            Детали
-          </button>
-        </td>
-      </tr>
-      </tbody>
-    </table>
+    <div v-if="activeTab === 'completed'" class="tab">
+      <h2>Completed Games</h2>
+      <table class="table table-striped table-hover table-bordered">
+        <thead class="thead-dark">
+        <tr>
+          <th>Game ID</th>
+          <th>Date</th>
+          <th>Bank</th>
+          <th>Players</th>
+          <th>X2 Amount</th>
+          <th>X3 Amount</th>
+          <th>X5 Amount</th>
+          <th>X50 Amount</th>
+          <th>Winner</th>
+          <th>Details</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="game in completedGames" :key="game.id">
+          <td>{{ game.game_id }}</td>
+          <td>{{ new Date(game.date).toLocaleString() }}</td>
+          <td>{{ game.bank }}</td>
+          <td>{{ game.players }}</td>
+          <td>
+            <div v-for="(item, index) in game.x2_wins.slice(0, 2)" :key="index" class="item">
+              <img :src="item.image_url" :alt="item.name" class="item-image" @error="imageError" />
+              <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
+            </div>
+            <div v-if="game.x2_wins.length > 2" class="item-more">
+              +{{ game.x2_wins.length - 2 }} more
+            </div>
+          </td>
+          <td>
+            <div v-for="(item, index) in game.x3_wins.slice(0, 2)" :key="index" class="item">
+              <img :src="item.image_url" :alt="item.name" class="item-image" @error="imageError" />
+              <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
+            </div>
+            <div v-if="game.x3_wins.length > 2" class="item-more">
+              +{{ game.x3_wins.length - 2 }} more
+            </div>
+          </td>
+          <td>
+            <div v-for="(item, index) in game.x5_wins.slice(0, 2)" :key="index" class="item">
+              <img :src="item.image_url" :alt="item.name" class="item-image" @error="imageError" />
+              <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
+            </div>
+            <div v-if="game.x5_wins.length > 2" class="item-more">
+              +{{ game.x5_wins.length - 2 }} more
+            </div>
+          </td>
+          <td>
+            <div v-for="(item, index) in game.x50_wins.slice(0, 2)" :key="index" class="item">
+              <img :src="item.image_url" :alt="item.name" class="item-image" @error="imageError" />
+              <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
+            </div>
+            <div v-if="game.x50_wins.length > 2" class="item-more">
+              +{{ game.x50_wins.length - 2 }} more
+            </div>
+          </td>
+          <td>{{ game.winner || 'N/A' }}</td>
+          <td>
+            <button @click="openModal(game)" class="btn btn-primary">
+              Детали
+            </button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div v-else-if="activeTab === 'active'" class="tab">
+      <h2>Active Games</h2>
+      <table class="table table-striped table-hover table-bordered">
+        <thead class="thead-dark">
+        <tr>
+          <th>Game ID</th>
+          <th>Date</th>
+          <th>Bank</th>
+          <th>Players</th>
+          <th>X2 Amount</th>
+          <th>X3 Amount</th>
+          <th>X5 Amount</th>
+          <th>X50 Amount</th>
+          <th>Details</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="game in activeGames" :key="game.id">
+          <td>{{ game.game_id }}</td>
+          <td>{{ new Date(game.date).toLocaleString() }}</td>
+          <td>{{ game.bank }}</td>
+          <td>{{ game.players }}</td>
+          <td>
+            <div v-for="(item, index) in game.x2_wins.slice(0, 2)" :key="index" class="item">
+              <img :src="item.image_url" :alt="item.name" class="item-image" @error="imageError" />
+              <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
+            </div>
+            <div v-if="game.x2_wins.length > 2" class="item-more">
+              +{{ game.x2_wins.length - 2 }} more
+            </div>
+          </td>
+          <td>
+            <div v-for="(item, index) in game.x3_wins.slice(0, 2)" :key="index" class="item">
+              <img :src="item.image_url" :alt="item.name" class="item-image" @error="imageError" />
+              <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
+            </div>
+            <div v-if="game.x3_wins.length > 2" class="item-more">
+              +{{ game.x3_wins.length - 2 }} more
+            </div>
+          </td>
+          <td>
+            <div v-for="(item, index) in game.x5_wins.slice(0, 2)" :key="index" class="item">
+              <img :src="item.image_url" :alt="item.name" class="item-image" @error="imageError" />
+              <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
+            </div>
+            <div v-if="game.x5_wins.length > 2" class="item-more">
+              +{{ game.x5_wins.length - 2 }} more
+            </div>
+          </td>
+          <td>
+            <div v-for="(item, index) in game.x50_wins.slice(0, 2)" :key="index" class="item">
+              <img :src="item.image_url" :alt="item.name" class="item-image" @error="imageError" />
+              <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
+            </div>
+            <div v-if="game.x50_wins.length > 2" class="item-more">
+              +{{ game.x50_wins.length - 2 }} more
+            </div>
+          </td>
+          <td>
+            <button @click="openModal(game)" class="btn btn-primary">
+              Детали
+            </button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
 
     <!-- Modal -->
     <div v-if="showModal" class="modal" tabindex="-1" role="dialog" style="display: block; background: rgba(0, 0, 0, 0.5);">
@@ -184,6 +199,7 @@ const completedGames = ref([]);
 const activeGames = ref([]);
 const selectedGame = ref(null);
 const showModal = ref(false);
+const activeTab = ref('completed');  // Для управления активной вкладкой
 
 const fetchCompletedGames = async () => {
   try {
@@ -299,5 +315,9 @@ onMounted(() => {
 .modal-footer {
   display: flex;
   justify-content: flex-end;
+}
+
+.nav-link {
+  cursor: pointer;
 }
 </style>

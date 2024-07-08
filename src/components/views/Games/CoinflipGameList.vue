@@ -2,6 +2,15 @@
   <div class="container mt-4">
     <h1>Coinflip Games</h1>
 
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a class="nav-link" :class="{ active: currentTab === 'completed' }" @click="currentTab = 'completed'">Completed Games</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" :class="{ active: currentTab === 'active' }" @click="currentTab = 'active'">Active Games</a>
+      </li>
+    </ul>
+
     <div v-if="loading" class="text-center">
       <div class="spinner-border" role="status">
         <span class="sr-only">Loading...</span>
@@ -9,112 +18,91 @@
     </div>
 
     <div v-else>
-      <table class="table table-bordered table-striped">
-        <thead>
-        <tr>
-          <th>Date</th>
-          <th>Players</th>
-          <th>Items</th>
-          <th>Bank</th>
-          <th>Winner</th>
-          <th>Winner Ticket</th>
-          <th>Game Value</th>
-          <th>Details</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr v-for="game in games" :key="game.id">
-          <td>{{ new Date(game.date).toLocaleString() }}</td>
-          <td>{{ game.players }}</td>
-          <td>
-            <div class="item-list">
-              <div v-for="(item, index) in game.items.slice(0, 2)" :key="index" class="item">
-                <img
-                    :src="item.image_url"
-                    :alt="item.name"
-                    class="item-image"
-                    @error="imageError"
-                />
-                <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
+      <div v-if="currentTab === 'completed'">
+        <h2>Completed Games</h2>
+        <table class="table table-bordered table-striped">
+          <thead>
+          <tr>
+            <th>Date</th>
+            <th>Players</th>
+            <th>Items</th>
+            <th>Bank</th>
+            <th>Winner</th>
+            <th>Winner Ticket</th>
+            <th>Game Value</th>
+            <th>Details</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr v-for="game in games" :key="game.id">
+            <td>{{ new Date(game.date).toLocaleString() }}</td>
+            <td>{{ game.players }}</td>
+            <td>
+              <div class="item-list">
+                <div v-for="(item, index) in game.items.slice(0, 2)" :key="index" class="item">
+                  <img :src="item.image_url" :alt="item.name" class="item-image" @error="imageError" />
+                  <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
+                </div>
+                <div v-if="game.items.length > 2" class="item-more">
+                  +{{ game.items.length - 2 }} more
+                </div>
               </div>
-              <div v-if="game.items.length > 2" class="item-more">
-                +{{ game.items.length - 2 }} more
-              </div>
-            </div>
-          </td>
-          <td>{{ game.bank }}</td>
-          <td>{{ game.winner }}</td>
-          <td>{{ game.winner_ticket }}</td>
-          <td>{{ game.game_value }}</td>
-          <td>
-            <button
-                @click="openModal(game)"
-                class="btn btn-primary"
-            >
-              Детали
-            </button>
-          </td>
-        </tr>
-        </tbody>
-      </table>
+            </td>
+            <td>{{ game.bank }}</td>
+            <td>{{ game.winner || 'N/A' }}</td>
+            <td>{{ game.winner_ticket }}</td>
+            <td>{{ game.game_value }}</td>
+            <td>
+              <button @click="openModal(game)" class="btn btn-primary">Детали</button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
 
-      <h2 class="mt-5">Active Games</h2>
-      <table class="table table-bordered table-striped">
-        <thead>
-        <tr>
-          <th>Date</th>
-          <th>Players</th>
-          <th>Items</th>
-          <th>Bank</th>
-          <th>Winner Ticket</th>
-          <th>Game Value</th>
-          <th>Details</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr v-for="game in activeGames" :key="game.id">
-          <td>{{ new Date(game.date).toLocaleString() }}</td>
-          <td>{{ game.players }}</td>
-          <td>
-            <div class="item-list">
-              <div v-for="(item, index) in game.items.slice(0, 2)" :key="index" class="item">
-                <img
-                    :src="item.image_url"
-                    :alt="item.name"
-                    class="item-image"
-                    @error="imageError"
-                />
-                <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
+      <div v-else>
+        <h2>Active Games</h2>
+        <table class="table table-bordered table-striped">
+          <thead>
+          <tr>
+            <th>Date</th>
+            <th>Players</th>
+            <th>Items</th>
+            <th>Bank</th>
+            <th>Winner Ticket</th>
+            <th>Game Value</th>
+            <th>Details</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr v-for="game in activeGames" :key="game.id">
+            <td>{{ new Date(game.date).toLocaleString() }}</td>
+            <td>{{ game.players }}</td>
+            <td>
+              <div class="item-list">
+                <div v-for="(item, index) in game.items.slice(0, 2)" :key="index" class="item">
+                  <img :src="item.image_url" :alt="item.name" class="item-image" @error="imageError" />
+                  <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
+                </div>
+                <div v-if="game.items.length > 2" class="item-more">
+                  +{{ game.items.length - 2 }} more
+                </div>
               </div>
-              <div v-if="game.items.length > 2" class="item-more">
-                +{{ game.items.length - 2 }} more
-              </div>
-            </div>
-          </td>
-          <td>{{ game.bank }}</td>
-          <td>{{ game.winner_ticket }}</td>
-          <td>{{ game.game_value }}</td>
-          <td>
-            <button
-                @click="openModal(game)"
-                class="btn btn-primary"
-            >
-              Детали
-            </button>
-          </td>
-        </tr>
-        </tbody>
-      </table>
+            </td>
+            <td>{{ game.bank }}</td>
+            <td>{{ game.winner_ticket }}</td>
+            <td>{{ game.game_value }}</td>
+            <td>
+              <button @click="openModal(game)" class="btn btn-primary">Details</button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <!-- Modal -->
-    <div
-        v-if="showModal"
-        class="modal"
-        tabindex="-1"
-        role="dialog"
-        style="display: block; background: rgba(0, 0, 0, 0.5);"
-    >
+    <div v-if="showModal" class="modal" tabindex="-1" role="dialog" style="display: block; background: rgba(0, 0, 0, 0.5);">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -129,12 +117,7 @@
             <p><strong>Bank:</strong> {{ selectedGame.bank }}</p>
             <div class="item-list">
               <div v-for="(item, index) in selectedGame.items" :key="index" class="item">
-                <img
-                    :src="item.image_url"
-                    :alt="item.name"
-                    class="item-image"
-                    @error="imageError"
-                />
+                <img :src="item.image_url" :alt="item.name" class="item-image" @error="imageError" />
                 <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
               </div>
             </div>
@@ -159,11 +142,12 @@ const activeGames = ref([]);
 const selectedGame = ref(null);
 const showModal = ref(false);
 const loading = ref(false);
+const currentTab = ref('completed');
 
 const fetchGames = async () => {
   try {
     loading.value = true;
-    const response = await fetch('http://localhost:8000/coinflipgame');
+    const response = await fetch('http://localhost:8000/coinflipgame/');
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
@@ -211,23 +195,7 @@ onMounted(() => {
 });
 </script>
 
-<style>
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-th, td {
-  border: 1px solid #ddd;
-  padding: 8px;
-  text-align: center;
-}
-
-th {
-  background-color: #f2f2f2;
-  text-align: center;
-}
-
+<style scoped>
 .table {
   margin-top: 20px;
 }
@@ -295,5 +263,13 @@ th {
 
 .spinner-border .sr-only {
   display: none;
+}
+
+.nav-tabs {
+  margin-top: 20px;
+}
+
+.nav-item {
+  cursor: pointer;
 }
 </style>
