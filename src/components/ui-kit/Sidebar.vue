@@ -25,6 +25,18 @@
           Статистика
         </router-link>
       </li>
+      <li>
+        <router-link to="/wheelgames" class="nav-link d-flex align-items-center" active-class="active">
+          <span class="material-icons me-2">games</span>
+          Wheel
+        </router-link>
+      </li>
+      <li>
+        <router-link to="/coinflipgames" class="nav-link d-flex align-items-center" active-class="active">
+          <span class="material-icons me-2">monetization_on</span>
+          Coinflip
+        </router-link>
+      </li>
     </ul>
     <hr>
     <div class="dropdown">
@@ -43,7 +55,7 @@
 </template>
 
 <script setup>
-import {useAuth} from "@/composables/admin/useLogout.js";
+import { useAuth } from "@/composables/admin/useLogout.js";
 
 const { logout } = useAuth();
 </script>

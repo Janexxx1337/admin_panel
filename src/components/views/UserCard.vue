@@ -23,7 +23,8 @@
                   </span>
                 </p>
                 <div class="text-center">
-                  <button class="btn btn-danger mb-3" @click="banUser">Забанить пользователя</button>
+                  <button v-if="!user.banned" class="btn btn-danger mb-3" @click="banUser">Забанить пользователя</button>
+                  <button v-if="user.banned" class="btn btn-success mb-3" @click="unbanUser">Разбанить пользователя</button>
                 </div>
               </div>
             </div>
@@ -111,16 +112,26 @@
     <div v-else class="alert alert-warning">
       <p>Пользователь не найден</p>
     </div>
+
+    <!-- Toast Notification -->
+    <div v-if="showNotification" class="toast show align-items-center text-white bg-success border-0 position-fixed bottom-0 end-0 p-3" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body">
+          {{ notificationMessage }}
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close" @click="showNotification = false"></button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
 import { onMounted } from 'vue';
+import { useUser } from '@/composables/users/card/useUser';
 import { useRoute } from 'vue-router';
-import { useUser } from '@/composables/users/card/useUser.js';
 
+const { user, balanceAmount, fetchUser, banUser, unbanUser, updateBalance, notificationMessage, showNotification } = useUser();
 const route = useRoute();
-const { user, balanceAmount, fetchUser, banUser, updateBalance } = useUser();
 
 onMounted(() => {
   const userId = route.params.id;
@@ -180,5 +191,12 @@ onMounted(() => {
 
 .balance-management .input-group-append button {
   margin-left: 10px;
+}
+
+.toast {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 1050;
 }
 </style>

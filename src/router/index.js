@@ -4,6 +4,8 @@ import UsersTable from '@/components/views/UsersTable.vue';
 import Deposits from '@/components/views/Deposits.vue';
 import UserCard from '@/components/views/UserCard.vue';
 import Withdrawals from '@/components/views/Withdrawals.vue';
+import WheelGameList from '@/components/views/Games/WheelGameList.vue';
+import CoinflipGameList from '@/components/views/Games/CoinflipGameList.vue';
 
 const routes = [
     {
@@ -34,6 +36,16 @@ const routes = [
         name: 'UserCard',
         component: UserCard,
         meta: { requiresAuth: true },
+    },
+    {
+        path: '/wheelgames',
+        name: 'WheelGameList',
+        component: WheelGameList,
+    },
+    {
+        path: '/coinflipgames',
+        name: 'CoinflipGameList',
+        component: CoinflipGameList,
     },
 ];
 

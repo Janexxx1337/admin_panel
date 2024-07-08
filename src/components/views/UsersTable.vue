@@ -28,7 +28,7 @@
         <th scope="col">Статус бана</th>
         <th scope="col">Действия</th>
         <th scope="col">Транзакции</th>
-        <th scope="col">Перейти</th> <!-- Новая колонка -->
+        <th scope="col">Перейти</th>
       </tr>
       </thead>
       <tbody>
@@ -60,7 +60,7 @@
             <ul class="list-group">
               <li v-for="transaction in user.transactions" :key="transaction.id" class="list-group-item">
                 <span class="badge bg-info text-dark mr-2">{{ transaction.amount }}$</span>
-                <small class="text-muted">{{ transaction.transaction_date }}</small>
+                <small class="text-muted">{{ new Date(transaction.transaction_date).toLocaleString() }}</small>
                 <p>{{ transaction.description }}</p>
               </li>
             </ul>
@@ -78,11 +78,11 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
-import { useRouter } from 'vue-router';
-import { useUsers } from '@/composables/users/useUsers.js';
+import {ref, computed} from 'vue';
+import {useRouter} from 'vue-router';
+import {useUsers} from '@/composables/users/useUsers.js';
 
-const { users, updateStatus } = useUsers();
+const {users, updateStatus} = useUsers();
 const router = useRouter();
 const searchQuery = ref('');
 const filterStatus = ref('');
