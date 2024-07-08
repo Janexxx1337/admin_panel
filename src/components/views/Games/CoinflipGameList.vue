@@ -27,7 +27,7 @@
                   class="item-image"
                   @error="imageError"
               />
-              <span>{{ item.name }} ({{ item.rarity }})</span>
+              <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
             </div>
             <div v-if="game.items.length > 2" class="item-more">
               +{{ game.items.length - 2 }} more
@@ -76,7 +76,7 @@
                   class="item-image"
                   @error="imageError"
               />
-              <span>{{ item.name }} ({{ item.rarity }})</span>
+              <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
             </div>
             <div v-if="game.items.length > 2" class="item-more">
               +{{ game.items.length - 2 }} more
@@ -126,7 +126,7 @@
                     class="item-image"
                     @error="imageError"
                 />
-                <span>{{ item.name }} ({{ item.rarity }})</span>
+                <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
               </div>
             </div>
             <p><strong>Winner:</strong> {{ selectedGame.winner }}</p>
@@ -271,5 +271,4 @@ th {
   display: flex;
   justify-content: flex-end;
 }
-
 </style>

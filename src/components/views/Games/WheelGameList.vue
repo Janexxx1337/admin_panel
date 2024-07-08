@@ -185,7 +185,7 @@ const activeGames = ref([]);
 const selectedGame = ref(null);
 const showModal = ref(false);
 
-const fetchGames = async () => {
+const fetchCompletedGames = async () => {
   try {
     const response = await fetch('http://localhost:8000/wheelgame/');
     if (!response.ok) {
@@ -194,9 +194,21 @@ const fetchGames = async () => {
     const data = await response.json();
     const games = data.wheel_games;
     completedGames.value = games.filter(game => !game.is_active);
-    activeGames.value = games.filter(game => game.is_active);
   } catch (error) {
-    console.error('Error fetching games:', error);
+    console.error('Error fetching completed games:', error);
+  }
+};
+
+const fetchActiveGames = async () => {
+  try {
+    const response = await fetch('http://localhost:8000/wheelgame/activegames/');
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const data = await response.json();
+    activeGames.value = data.active_wheel_games;
+  } catch (error) {
+    console.error('Error fetching active games:', error);
   }
 };
 
@@ -214,7 +226,8 @@ const closeModal = () => {
 };
 
 onMounted(() => {
-  fetchGames();
+  fetchCompletedGames();
+  fetchActiveGames();
 });
 </script>
 
