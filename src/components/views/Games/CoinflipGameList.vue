@@ -1,102 +1,111 @@
 <template>
   <div class="container mt-4">
     <h1>Coinflip Games</h1>
-    <table class="table table-bordered table-striped">
-      <thead>
-      <tr>
-        <th>Date</th>
-        <th>Players</th>
-        <th>Items</th>
-        <th>Bank</th>
-        <th>Winner</th>
-        <th>Winner Ticket</th>
-        <th>Game Value</th>
-        <th>Details</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr v-for="game in games" :key="game.id">
-        <td>{{ new Date(game.date).toLocaleString() }}</td>
-        <td>{{ game.players }}</td>
-        <td>
-          <div class="item-list">
-            <div v-for="(item, index) in game.items.slice(0, 2)" :key="index" class="item">
-              <img
-                  :src="item.image_url"
-                  :alt="item.name"
-                  class="item-image"
-                  @error="imageError"
-              />
-              <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
-            </div>
-            <div v-if="game.items.length > 2" class="item-more">
-              +{{ game.items.length - 2 }} more
-            </div>
-          </div>
-        </td>
-        <td>{{ game.bank }}</td>
-        <td>{{ game.winner }}</td>
-        <td>{{ game.winner_ticket }}</td>
-        <td>{{ game.game_value }}</td>
-        <td>
-          <button
-              @click="openModal(game)"
-              class="btn btn-primary"
-          >
-            Детали
-          </button>
-        </td>
-      </tr>
-      </tbody>
-    </table>
 
-    <h2 class="mt-5">Active Games</h2>
-    <table class="table table-bordered table-striped">
-      <thead>
-      <tr>
-        <th>Date</th>
-        <th>Players</th>
-        <th>Items</th>
-        <th>Bank</th>
-        <th>Winner Ticket</th>
-        <th>Game Value</th>
-        <th>Details</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr v-for="game in activeGames" :key="game.id">
-        <td>{{ new Date(game.date).toLocaleString() }}</td>
-        <td>{{ game.players }}</td>
-        <td>
-          <div class="item-list">
-            <div v-for="(item, index) in game.items.slice(0, 2)" :key="index" class="item">
-              <img
-                  :src="item.image_url"
-                  :alt="item.name"
-                  class="item-image"
-                  @error="imageError"
-              />
-              <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
+    <div v-if="loading" class="text-center">
+      <div class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
+
+    <div v-else>
+      <table class="table table-bordered table-striped">
+        <thead>
+        <tr>
+          <th>Date</th>
+          <th>Players</th>
+          <th>Items</th>
+          <th>Bank</th>
+          <th>Winner</th>
+          <th>Winner Ticket</th>
+          <th>Game Value</th>
+          <th>Details</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="game in games" :key="game.id">
+          <td>{{ new Date(game.date).toLocaleString() }}</td>
+          <td>{{ game.players }}</td>
+          <td>
+            <div class="item-list">
+              <div v-for="(item, index) in game.items.slice(0, 2)" :key="index" class="item">
+                <img
+                    :src="item.image_url"
+                    :alt="item.name"
+                    class="item-image"
+                    @error="imageError"
+                />
+                <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
+              </div>
+              <div v-if="game.items.length > 2" class="item-more">
+                +{{ game.items.length - 2 }} more
+              </div>
             </div>
-            <div v-if="game.items.length > 2" class="item-more">
-              +{{ game.items.length - 2 }} more
+          </td>
+          <td>{{ game.bank }}</td>
+          <td>{{ game.winner }}</td>
+          <td>{{ game.winner_ticket }}</td>
+          <td>{{ game.game_value }}</td>
+          <td>
+            <button
+                @click="openModal(game)"
+                class="btn btn-primary"
+            >
+              Детали
+            </button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+
+      <h2 class="mt-5">Active Games</h2>
+      <table class="table table-bordered table-striped">
+        <thead>
+        <tr>
+          <th>Date</th>
+          <th>Players</th>
+          <th>Items</th>
+          <th>Bank</th>
+          <th>Winner Ticket</th>
+          <th>Game Value</th>
+          <th>Details</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="game in activeGames" :key="game.id">
+          <td>{{ new Date(game.date).toLocaleString() }}</td>
+          <td>{{ game.players }}</td>
+          <td>
+            <div class="item-list">
+              <div v-for="(item, index) in game.items.slice(0, 2)" :key="index" class="item">
+                <img
+                    :src="item.image_url"
+                    :alt="item.name"
+                    class="item-image"
+                    @error="imageError"
+                />
+                <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
+              </div>
+              <div v-if="game.items.length > 2" class="item-more">
+                +{{ game.items.length - 2 }} more
+              </div>
             </div>
-          </div>
-        </td>
-        <td>{{ game.bank }}</td>
-        <td>{{ game.winner_ticket }}</td>
-        <td>{{ game.game_value }}</td>
-        <td>
-          <button
-              @click="openModal(game)"
-              class="btn btn-primary"
-          >
-            Детали
-          </button>
-        </td>
-      </tr>
-      </tbody>
-    </table>
+          </td>
+          <td>{{ game.bank }}</td>
+          <td>{{ game.winner_ticket }}</td>
+          <td>{{ game.game_value }}</td>
+          <td>
+            <button
+                @click="openModal(game)"
+                class="btn btn-primary"
+            >
+              Детали
+            </button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
 
     <!-- Modal -->
     <div
@@ -149,9 +158,11 @@ const games = ref([]);
 const activeGames = ref([]);
 const selectedGame = ref(null);
 const showModal = ref(false);
+const loading = ref(false);
 
 const fetchGames = async () => {
   try {
+    loading.value = true;
     const response = await fetch('http://localhost:8000/coinflipgame');
     if (!response.ok) {
       throw new Error('Network response was not ok');
@@ -160,11 +171,14 @@ const fetchGames = async () => {
     games.value = data.game_details;
   } catch (error) {
     console.error('Error fetching games:', error);
+  } finally {
+    loading.value = false;
   }
 };
 
 const fetchActiveGames = async () => {
   try {
+    loading.value = true;
     const response = await fetch('http://localhost:8000/coinflipgame/activegames/');
     if (!response.ok) {
       throw new Error('Network response was not ok');
@@ -173,6 +187,8 @@ const fetchActiveGames = async () => {
     activeGames.value = data.active_games;
   } catch (error) {
     console.error('Error fetching active games:', error);
+  } finally {
+    loading.value = false;
   }
 };
 
@@ -270,5 +286,14 @@ th {
 .modal-footer {
   display: flex;
   justify-content: flex-end;
+}
+
+.spinner-border {
+  width: 3rem;
+  height: 3rem;
+}
+
+.spinner-border .sr-only {
+  display: none;
 }
 </style>
