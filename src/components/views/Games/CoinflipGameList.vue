@@ -47,8 +47,9 @@
                   +{{ game.items.length - 2 }} more
                 </div>
               </div>
+              <div class="total-price">Total: {{ calculateTotalPrice(game.items) }}$</div>
             </td>
-            <td>{{ game.bank }}</td>
+            <td>{{ calculateTotalPrice(game.items) }}$</td>
             <td>{{ game.winner || 'N/A' }}</td>
             <td>{{ game.winner_ticket }}</td>
             <td>{{ game.game_value }}</td>
@@ -88,8 +89,9 @@
                   +{{ game.items.length - 2 }} more
                 </div>
               </div>
+              <div class="total-price">Total: {{ calculateTotalPrice(game.items) }}$</div>
             </td>
-            <td>{{ game.bank }}</td>
+            <td>{{ calculateTotalPrice(game.items) }}$</td>
             <td>{{ game.winner_ticket }}</td>
             <td>{{ game.game_value }}</td>
             <td>
@@ -114,12 +116,25 @@
           <div class="modal-body">
             <p><strong>Date:</strong> {{ new Date(selectedGame.date).toLocaleString() }}</p>
             <p><strong>Players:</strong> {{ selectedGame.players }}</p>
-            <p><strong>Bank:</strong> {{ selectedGame.bank }}</p>
-            <div class="item-list">
-              <div v-for="(item, index) in selectedGame.items" :key="index" class="item">
-                <img :src="item.image_url" :alt="item.name" class="item-image" @error="imageError" />
-                <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
+            <p><strong>Bank:</strong> {{ calculateTotalPrice(selectedGame.items) }}$</p>
+            <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+              <div class="carousel-inner">
+                <div v-for="(item, index) in selectedGame.items" :key="index" :class="['carousel-item', { active: index === 0 }]">
+                  <img :src="item.image_url" :alt="item.name" class="d-block w-100" @error="imageError" />
+                  <div class="carousel-caption d-none d-md-block">
+                    <h5>{{ item.name }}</h5>
+                    <p>{{ item.rarity }} - {{ item.price }}$</p>
+                  </div>
+                </div>
               </div>
+              <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+              </button>
+              <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+              </button>
             </div>
             <p><strong>Winner:</strong> {{ selectedGame.winner }}</p>
             <p><strong>Winner Ticket:</strong> {{ selectedGame.winner_ticket }}</p>
@@ -189,6 +204,10 @@ const closeModal = () => {
   showModal.value = false;
 };
 
+const calculateTotalPrice = (items) => {
+  return items.reduce((total, item) => total + item.price, 0);
+};
+
 onMounted(() => {
   fetchGames();
   fetchActiveGames();
@@ -241,6 +260,11 @@ onMounted(() => {
   text-decoration: underline;
 }
 
+.total-price {
+  font-weight: bold;
+  margin-top: 5px;
+}
+
 .modal-content {
   padding: 20px;
 }
@@ -272,4 +296,20 @@ onMounted(() => {
 .nav-item {
   cursor: pointer;
 }
+
+.carousel-inner .carousel-item {
+  transition: transform 0.6s ease-in-out;
+}
+
+.carousel-caption {
+  background: rgba(0, 0, 0, 0.5);
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  filter: invert(1);
+}
+
 </style>

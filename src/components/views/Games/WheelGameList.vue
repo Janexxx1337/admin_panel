@@ -32,7 +32,7 @@
         <tr v-for="game in completedGames" :key="game.id">
           <td>{{ game.game_id }}</td>
           <td>{{ new Date(game.date).toLocaleString() }}</td>
-          <td>{{ game.bank }}</td>
+          <td>{{ calculateTotalPrice([...game.x2_wins, ...game.x3_wins, ...game.x5_wins, ...game.x50_wins]) }}$</td>
           <td>{{ game.players }}</td>
           <td>
             <div v-for="(item, index) in game.x2_wins.slice(0, 2)" :key="index" class="item">
@@ -42,6 +42,7 @@
             <div v-if="game.x2_wins.length > 2" class="item-more">
               +{{ game.x2_wins.length - 2 }} more
             </div>
+            <div class="total-price">Total: {{ calculateTotalPrice(game.x2_wins) }}$</div>
           </td>
           <td>
             <div v-for="(item, index) in game.x3_wins.slice(0, 2)" :key="index" class="item">
@@ -51,6 +52,7 @@
             <div v-if="game.x3_wins.length > 2" class="item-more">
               +{{ game.x3_wins.length - 2 }} more
             </div>
+            <div class="total-price">Total: {{ calculateTotalPrice(game.x3_wins) }}$</div>
           </td>
           <td>
             <div v-for="(item, index) in game.x5_wins.slice(0, 2)" :key="index" class="item">
@@ -60,6 +62,7 @@
             <div v-if="game.x5_wins.length > 2" class="item-more">
               +{{ game.x5_wins.length - 2 }} more
             </div>
+            <div class="total-price">Total: {{ calculateTotalPrice(game.x5_wins) }}$</div>
           </td>
           <td>
             <div v-for="(item, index) in game.x50_wins.slice(0, 2)" :key="index" class="item">
@@ -69,6 +72,7 @@
             <div v-if="game.x50_wins.length > 2" class="item-more">
               +{{ game.x50_wins.length - 2 }} more
             </div>
+            <div class="total-price">Total: {{ calculateTotalPrice(game.x50_wins) }}$</div>
           </td>
           <td>{{ game.winner || 'N/A' }}</td>
           <td>
@@ -101,7 +105,7 @@
         <tr v-for="game in activeGames" :key="game.id">
           <td>{{ game.game_id }}</td>
           <td>{{ new Date(game.date).toLocaleString() }}</td>
-          <td>{{ game.bank }}</td>
+          <td>{{ calculateTotalPrice([...game.x2_wins, ...game.x3_wins, ...game.x5_wins, ...game.x50_wins]) }}$</td>
           <td>{{ game.players }}</td>
           <td>
             <div v-for="(item, index) in game.x2_wins.slice(0, 2)" :key="index" class="item">
@@ -111,6 +115,7 @@
             <div v-if="game.x2_wins.length > 2" class="item-more">
               +{{ game.x2_wins.length - 2 }} more
             </div>
+            <div class="total-price">Total: {{ calculateTotalPrice(game.x2_wins) }}$</div>
           </td>
           <td>
             <div v-for="(item, index) in game.x3_wins.slice(0, 2)" :key="index" class="item">
@@ -120,6 +125,7 @@
             <div v-if="game.x3_wins.length > 2" class="item-more">
               +{{ game.x3_wins.length - 2 }} more
             </div>
+            <div class="total-price">Total: {{ calculateTotalPrice(game.x3_wins) }}$</div>
           </td>
           <td>
             <div v-for="(item, index) in game.x5_wins.slice(0, 2)" :key="index" class="item">
@@ -129,6 +135,7 @@
             <div v-if="game.x5_wins.length > 2" class="item-more">
               +{{ game.x5_wins.length - 2 }} more
             </div>
+            <div class="total-price">Total: {{ calculateTotalPrice(game.x5_wins) }}$</div>
           </td>
           <td>
             <div v-for="(item, index) in game.x50_wins.slice(0, 2)" :key="index" class="item">
@@ -138,6 +145,7 @@
             <div v-if="game.x50_wins.length > 2" class="item-more">
               +{{ game.x50_wins.length - 2 }} more
             </div>
+            <div class="total-price">Total: {{ calculateTotalPrice(game.x50_wins) }}$</div>
           </td>
           <td>
             <button @click="openModal(game)" class="btn btn-primary">
@@ -162,26 +170,26 @@
           <div class="modal-body">
             <p><strong>Date:</strong> {{ new Date(selectedGame.date).toLocaleString() }}</p>
             <p><strong>Players:</strong> {{ selectedGame.players }}</p>
-            <p><strong>Bank:</strong> {{ selectedGame.bank }}</p>
-            <div class="item-list">
-              <div v-for="(item, index) in selectedGame.x2_wins" :key="index" class="item">
-                <img :src="item.image_url" :alt="item.name" class="item-image" @error="imageError" />
-                <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
+            <p><strong>Bank:</strong> {{ calculateTotalPrice([...selectedGame.x2_wins, ...selectedGame.x3_wins, ...selectedGame.x5_wins, ...selectedGame.x50_wins]) }}$</p>
+            <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+              <div class="carousel-inner">
+                <div v-for="(item, index) in [...selectedGame.x2_wins, ...selectedGame.x3_wins, ...selectedGame.x5_wins, ...selectedGame.x50_wins]" :key="index" :class="['carousel-item', { active: index === 0 }]">
+                  <img :src="item.image_url" :alt="item.name" class="d-block w-100" @error="imageError" />
+                  <div class="carousel-caption d-none d-md-block">
+                    <h5>{{ item.name }}</h5>
+                    <p>{{ item.rarity }} - {{ item.price }}$</p>
+                  </div>
+                </div>
               </div>
-              <div v-for="(item, index) in selectedGame.x3_wins" :key="index" class="item">
-                <img :src="item.image_url" :alt="item.name" class="item-image" @error="imageError" />
-                <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
-              </div>
-              <div v-for="(item, index) in selectedGame.x5_wins" :key="index" class="item">
-                <img :src="item.image_url" :alt="item.name" class="item-image" @error="imageError" />
-                <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
-              </div>
-              <div v-for="(item, index) in selectedGame.x50_wins" :key="index" class="item">
-                <img :src="item.image_url" :alt="item.name" class="item-image" @error="imageError" />
-                <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
-              </div>
+              <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+              </button>
+              <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+              </button>
             </div>
-            <p><strong>Game Value:</strong> {{ selectedGame.game_value }}</p>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" @click="closeModal">Close</button>
@@ -239,6 +247,10 @@ const openModal = (game) => {
 
 const closeModal = () => {
   showModal.value = false;
+};
+
+const calculateTotalPrice = (items) => {
+  return items.reduce((total, item) => total + item.price, 0);
 };
 
 onMounted(() => {
@@ -302,6 +314,11 @@ onMounted(() => {
   text-decoration: underline;
 }
 
+.total-price {
+  font-weight: bold;
+  margin-top: 5px;
+}
+
 .modal-content {
   padding: 20px;
 }
@@ -320,4 +337,21 @@ onMounted(() => {
 .nav-link {
   cursor: pointer;
 }
+
+.carousel-inner .carousel-item {
+  transition: transform 0.6s ease-in-out;
+}
+
+.carousel-caption {
+  background: rgba(0, 0, 0, 0.5);
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  filter: invert(1);
+}
+
+
 </style>
