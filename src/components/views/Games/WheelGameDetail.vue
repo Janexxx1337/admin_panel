@@ -1,7 +1,7 @@
 <template>
   <div class="container mt-4">
     <div class="card">
-      <h1>Детали</h1>
+      <h1>Детали Wheel Game</h1>
       <div v-if="game">
         <div class="game-info">
           <p><strong>Game ID:</strong> {{ game.game_id }}</p>
@@ -35,15 +35,17 @@
       <div v-else>
         <p>Loading...</p>
       </div>
+      <button @click="goBack" class="btn btn-secondary mt-3">Назад</button>
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 const route = useRoute();
+const router = useRouter();
 const game = ref(null);
 
 const fetchGameDetails = async (gameId) => {
@@ -83,6 +85,10 @@ const allWins = computed(() => {
   return game.value ? [...game.value.x2_wins, ...game.value.x3_wins, ...game.value.x5_wins, ...game.value.x50_wins] : [];
 });
 
+const goBack = () => {
+  router.back();
+};
+
 onMounted(() => {
   fetchGameDetails(route.params.id);
 });
@@ -112,11 +118,6 @@ h1, h2 {
   color: #333;
 }
 
-.winner-detail {
-  max-width: 500px;
-  margin: 0 auto;
-}
-
 .carousel {
   margin-top: 10px;
 }
@@ -134,5 +135,10 @@ h1, h2 {
 .carousel-control-prev-icon,
 .carousel-control-next-icon {
   filter: invert(1);
+}
+
+.btn {
+  display: block;
+  margin: auto;
 }
 </style>

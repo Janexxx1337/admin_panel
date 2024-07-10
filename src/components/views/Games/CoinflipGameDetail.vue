@@ -37,15 +37,17 @@
       <div v-else>
         <p>Loading...</p>
       </div>
+      <button @click="goBack" class="btn btn-secondary mt-3">Назад</button>
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 const route = useRoute();
+const router = useRouter();
 const game = ref(null);
 
 const fetchGameDetails = async (gameId) => {
@@ -79,6 +81,10 @@ const totalBank = computed(() => {
 
 const calculateTotalPrice = (items) => {
   return items.reduce((total, item) => total + item.price, 0);
+};
+
+const goBack = () => {
+  router.back();
 };
 
 onMounted(() => {
@@ -127,5 +133,10 @@ h1, h2 {
 .carousel-control-prev-icon,
 .carousel-control-next-icon {
   filter: invert(1);
+}
+
+.btn {
+  display: block;
+  margin: auto;
 }
 </style>
