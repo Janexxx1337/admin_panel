@@ -6,8 +6,10 @@ import UserCard from '@/components/views/UserCard.vue';
 import Withdrawals from '@/components/views/Withdrawals.vue';
 import WheelGameList from '@/components/views/Games/WheelGameList.vue';
 import CoinflipGameList from '@/components/views/Games/CoinflipGameList.vue';
+import WheelGameDetail from '@/components/views/Games/WheelGameDetail.vue'; // Импортируем новый компонент
 
 const routes = [
+    // другие маршруты
     {
         path: '/admin',
         name: 'Login',
@@ -41,11 +43,19 @@ const routes = [
         path: '/wheelgames',
         name: 'WheelGameList',
         component: WheelGameList,
+        meta: { requiresAuth: true },
     },
     {
         path: '/coinflipgames',
         name: 'CoinflipGameList',
         component: CoinflipGameList,
+        meta: { requiresAuth: true },
+    },
+    {
+        path: '/wheelgames/:id',  // Новый маршрут для деталей игры
+        name: 'WheelGameDetail',
+        component: WheelGameDetail,
+        meta: { requiresAuth: true },
     },
 ];
 
