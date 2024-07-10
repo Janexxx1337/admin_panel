@@ -1,117 +1,146 @@
 <template>
-  <div class="container mt-4">
-    <h1>Coinflip Games</h1>
+  <el-container class="mt-4 container">
+    <el-header>
+      <h1>Coinflip Games</h1>
+    </el-header>
 
-    <ul class="nav nav-tabs">
-      <li class="nav-item">
-        <a class="nav-link" :class="{ active: currentTab === 'completed' }" @click="currentTab = 'completed'">Completed Games</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" :class="{ active: currentTab === 'active' }" @click="currentTab = 'active'">Active Games</a>
-      </li>
-    </ul>
+    <el-tabs v-model="currentTab">
+      <el-tab-pane label="Completed Games" name="completed">
+        <div v-if="loading" class="text-center">
+          <el-loading :fullscreen="true" lock>
+            <span>Loading...</span>
+          </el-loading>
+        </div>
+        <div v-else>
+          <h2>Completed Games</h2>
+          <el-table :data="paginatedCompletedGames" style="width: 100%" stripe border>
+            <el-table-column prop="date" label="Date" sortable>
+              <template #default="scope">
+                {{ new Date(scope.row.date).toLocaleString() }}
+              </template>
+            </el-table-column>
+            <el-table-column prop="players" label="Players" sortable></el-table-column>
+            <el-table-column label="Items">
+              <template #default="scope">
+                <div class="item-list">
+                  <div v-for="(item, index) in scope.row.items.slice(0, 2)" :key="index" class="item">
+                    <img :src="item.image_url" :alt="item.name" class="item-image" @error="imageError" />
+                    <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
+                  </div>
+                  <div v-if="scope.row.items.length > 2" class="item-more">
+                    +{{ scope.row.items.length - 2 }} more
+                  </div>
+                </div>
+                <div class="total-price">Total: {{ calculateTotalPrice(scope.row.items) }}$</div>
+              </template>
+            </el-table-column>
+            <el-table-column prop="bank" label="Bank" sortable>
+              <template #default="scope">
+                {{ calculateTotalPrice(scope.row.items) }}$
+              </template>
+            </el-table-column>
+            <el-table-column prop="winner" label="Winner" sortable>
+              <template #default="scope">
+                {{ scope.row.winner || 'N/A' }}
+              </template>
+            </el-table-column>
+            <el-table-column prop="winner_ticket" label="Winner Ticket" sortable></el-table-column>
+            <el-table-column prop="game_value" label="Game Value" sortable></el-table-column>
+            <el-table-column label="Actions">
+              <template #default="scope">
+                <router-link :to="{ name: 'CoinflipGameDetail', params: { id: scope.row.id } }">
+                  <el-button type="primary">Details</el-button>
+                </router-link>
+              </template>
+            </el-table-column>
+          </el-table>
+          <el-pagination
+              background
+              layout="prev, pager, next"
+              :total="games.length"
+              :page-size="pageSize"
+              @current-change="handleCurrentChangeCompleted"
+          ></el-pagination>
+        </div>
+      </el-tab-pane>
 
-    <div v-if="loading" class="text-center">
-      <div class="spinner-border" role="status">
-        <span class="sr-only">Loading...</span>
-      </div>
-    </div>
-
-    <div v-else>
-      <div v-if="currentTab === 'completed'">
-        <h2>Completed Games</h2>
-        <table class="table table-bordered table-striped">
-          <thead>
-          <tr>
-            <th>Date</th>
-            <th>Players</th>
-            <th>Items</th>
-            <th>Bank</th>
-            <th>Winner</th>
-            <th>Winner Ticket</th>
-            <th>Game Value</th>
-            <th>Details</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr v-for="game in games" :key="game.id">
-            <td>{{ new Date(game.date).toLocaleString() }}</td>
-            <td>{{ game.players }}</td>
-            <td>
-              <div class="item-list">
-                <div v-for="(item, index) in game.items.slice(0, 2)" :key="index" class="item">
-                  <img :src="item.image_url" :alt="item.name" class="item-image" @error="imageError" />
-                  <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
+      <el-tab-pane label="Active Games" name="active">
+        <div v-if="loading" class="text-center">
+          <el-loading :fullscreen="true" lock>
+            <span>Loading...</span>
+          </el-loading>
+        </div>
+        <div v-else>
+          <h2>Active Games</h2>
+          <el-table :data="paginatedActiveGames" style="width: 100%" stripe border>
+            <el-table-column prop="date" label="Date" sortable>
+              <template #default="scope">
+                {{ new Date(scope.row.date).toLocaleString() }}
+              </template>
+            </el-table-column>
+            <el-table-column prop="players" label="Players" sortable></el-table-column>
+            <el-table-column label="Items">
+              <template #default="scope">
+                <div class="item-list">
+                  <div v-for="(item, index) in scope.row.items.slice(0, 2)" :key="index" class="item">
+                    <img :src="item.image_url" :alt="item.name" class="item-image" @error="imageError" />
+                    <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
+                  </div>
+                  <div v-if="scope.row.items.length > 2" class="item-more">
+                    +{{ scope.row.items.length - 2 }} more
+                  </div>
                 </div>
-                <div v-if="game.items.length > 2" class="item-more">
-                  +{{ game.items.length - 2 }} more
-                </div>
-              </div>
-              <div class="total-price">Total: {{ calculateTotalPrice(game.items) }}$</div>
-            </td>
-            <td>{{ calculateTotalPrice(game.items) }}$</td>
-            <td>{{ game.winner || 'N/A' }}</td>
-            <td>{{ game.winner_ticket }}</td>
-            <td>{{ game.game_value }}</td>
-            <td>
-              <router-link :to="{ name: 'CoinflipGameDetail', params: { id: game.id } }" class="btn btn-primary">Детали</router-link>
-            </td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div v-else>
-        <h2>Active Games</h2>
-        <table class="table table-bordered table-striped">
-          <thead>
-          <tr>
-            <th>Date</th>
-            <th>Players</th>
-            <th>Items</th>
-            <th>Bank</th>
-            <th>Winner Ticket</th>
-            <th>Game Value</th>
-            <th>Details</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr v-for="game in activeGames" :key="game.id">
-            <td>{{ new Date(game.date).toLocaleString() }}</td>
-            <td>{{ game.players }}</td>
-            <td>
-              <div class="item-list">
-                <div v-for="(item, index) in game.items.slice(0, 2)" :key="index" class="item">
-                  <img :src="item.image_url" :alt="item.name" class="item-image" @error="imageError" />
-                  <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
-                </div>
-                <div v-if="game.items.length > 2" class="item-more">
-                  +{{ game.items.length - 2 }} more
-                </div>
-              </div>
-              <div class="total-price">Total: {{ calculateTotalPrice(game.items) }}$</div>
-            </td>
-            <td>{{ calculateTotalPrice(game.items) }}$</td>
-            <td>{{ game.winner_ticket }}</td>
-            <td>{{ game.game_value }}</td>
-            <td>
-              <router-link :to="{ name: 'CoinflipGameDetail', params: { id: game.id } }" class="btn btn-primary">Детали</router-link>
-            </td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
+                <div class="total-price">Total: {{ calculateTotalPrice(scope.row.items) }}$</div>
+              </template>
+            </el-table-column>
+            <el-table-column prop="bank" label="Bank" sortable>
+              <template #default="scope">
+                {{ calculateTotalPrice(scope.row.items) }}$
+              </template>
+            </el-table-column>
+            <el-table-column prop="winner_ticket" label="Winner Ticket" sortable></el-table-column>
+            <el-table-column prop="game_value" label="Game Value" sortable></el-table-column>
+            <el-table-column label="Actions">
+              <template #default="scope">
+                <router-link :to="{ name: 'CoinflipGameDetail', params: { id: scope.row.id } }">
+                  <el-button type="primary">Details</el-button>
+                </router-link>
+              </template>
+            </el-table-column>
+          </el-table>
+          <el-pagination
+              background
+              layout="prev, pager, next"
+              :total="activeGames.length"
+              :page-size="pageSize"
+              @current-change="handleCurrentChangeActive"
+          ></el-pagination>
+        </div>
+      </el-tab-pane>
+    </el-tabs>
+  </el-container>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import {ref, onMounted, computed} from 'vue';
 
 const games = ref([]);
 const activeGames = ref([]);
 const loading = ref(false);
 const currentTab = ref('completed');
+const pageSize = ref(2);
+const currentPageCompleted = ref(1);
+const currentPageActive = ref(1);
+
+const paginatedCompletedGames = computed(() => {
+  const start = (currentPageCompleted.value - 1) * pageSize.value;
+  return games.value.slice(start, start + pageSize.value);
+});
+
+const paginatedActiveGames = computed(() => {
+  const start = (currentPageActive.value - 1) * pageSize.value;
+  return activeGames.value.slice(start, start + pageSize.value);
+});
 
 const fetchGames = async () => {
   try {
@@ -146,11 +175,19 @@ const fetchActiveGames = async () => {
 };
 
 const imageError = (event) => {
-  event.target.src = 'https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpoo6m1FBRp3_bGcjhQ09-jq5WYh8j3KqnUjlRd4cJ5nqfC9Inz3VHtrRJrNmj6d4XEdlBqZw7R-VTqxr-6hJS-uJjAm3FnsnQi-z-DyGAd0sdD';
+  event.target.src = 'https://via.placeholder.com/100x50?text=No+Image';
 };
 
 const calculateTotalPrice = (items) => {
   return items.reduce((total, item) => total + item.price, 0);
+};
+
+const handleCurrentChangeCompleted = (page) => {
+  currentPageCompleted.value = page;
+};
+
+const handleCurrentChangeActive = (page) => {
+  currentPageActive.value = page;
 };
 
 onMounted(() => {
@@ -158,9 +195,8 @@ onMounted(() => {
   fetchActiveGames();
 });
 </script>
-
 <style scoped>
-.table {
+.el-table {
   margin-top: 20px;
 }
 
@@ -208,22 +244,5 @@ onMounted(() => {
 .total-price {
   font-weight: bold;
   margin-top: 5px;
-}
-
-.spinner-border {
-  width: 3rem;
-  height: 3rem;
-}
-
-.spinner-border .sr-only {
-  display: none;
-}
-
-.nav-tabs {
-  margin-top: 20px;
-}
-
-.nav-item {
-  cursor: pointer;
 }
 </style>

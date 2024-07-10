@@ -1,20 +1,25 @@
 <template>
-  <div class="container mt-4">
-    <div class="card">
-      <h1>Детали Coinflip Игры</h1>
+  <el-container class="mt-4 container">
+    <el-card shadow="hover" class="card">
+      <el-row>
+        <el-col :span="24">
+          <el-page-header @back="goBack" content="Детали Coinflip Игры"></el-page-header>
+        </el-col>
+      </el-row>
       <div v-if="game">
-        <div class="game-info">
-          <p><strong>Game ID:</strong> {{ game.id }}</p>
-          <p><strong>Date:</strong> {{ formattedDate }}</p>
-          <p><strong>Players:</strong> {{ game.players }}</p>
-          <p><strong>Bank:</strong> {{ totalBank }}$</p>
-          <p><strong>Total Items:</strong> {{ totalItems }}</p>
-        </div>
+        <el-row class="game-info">
+          <el-col :span="12"><p><strong>Game ID:</strong> {{ game.id }}</p></el-col>
+          <el-col :span="12"><p><strong>Date:</strong> {{ formattedDate }}</p></el-col>
+          <el-col :span="12"><p><strong>Players:</strong> {{ game.players }}</p></el-col>
+          <el-col :span="12"><p><strong>Bank:</strong> {{ totalBank }}$</p></el-col>
+          <el-col :span="12"><p><strong>Total Items:</strong> {{ totalItems }}</p></el-col>
+        </el-row>
+        <el-divider></el-divider>
         <h2>Победитель</h2>
         <p><strong>Победитель:</strong> {{ game.winner || 'N/A' }}</p>
         <p><strong>Победный билет:</strong> {{ game.winner_ticket }}</p>
         <p><strong>Стоимость игры:</strong> {{ game.game_value }}</p>
-        <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel" style="width: 300px;">
+        <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel" style="width: 300px; margin: 0 auto;">
           <div class="carousel-inner">
             <div v-for="(item, index) in game.items" :key="index" :class="['carousel-item', { active: index === 0 }]">
               <img :src="item.image_url" :alt="item.name" class="d-block w-100" @error="imageError" />
@@ -35,11 +40,10 @@
         </div>
       </div>
       <div v-else>
-        <p>Loading...</p>
+        <el-empty description="Loading..."></el-empty>
       </div>
-      <button @click="goBack" class="btn btn-secondary mt-3">Назад</button>
-    </div>
-  </div>
+    </el-card>
+  </el-container>
 </template>
 
 <script setup>
@@ -99,16 +103,22 @@ onMounted(() => {
 }
 
 .card {
-  background: #fff;
+  background: rgba(255, 255, 255, 0.3);
   padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   width: 100%;
   max-width: 1200px;
+  text-align: center;
 }
 
 .game-info p {
   margin: 5px 0;
+  font-size: 1.2rem;
+  color: #333;
 }
 
 h1, h2 {
@@ -116,27 +126,11 @@ h1, h2 {
   color: #333;
 }
 
-.carousel {
-  margin-top: 10px;
-}
-
-.carousel-inner .carousel-item {
-  transition: transform 0.6s ease-in-out;
-}
-
 .carousel-caption {
   background: rgba(0, 0, 0, 0.5);
   padding: 10px;
-  border-radius: 5px;
+  border-radius: 10px;
+  color: #fff;
 }
 
-.carousel-control-prev-icon,
-.carousel-control-next-icon {
-  filter: invert(1);
-}
-
-.btn {
-  display: block;
-  margin: auto;
-}
 </style>

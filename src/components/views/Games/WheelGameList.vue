@@ -1,173 +1,232 @@
 <template>
-  <div class="container mt-4">
-    <h1>Wheel Games</h1>
+  <el-container class="mt-4 container">
+    <el-header>
+      <h1>Wheel Games</h1>
+    </el-header>
 
-    <ul class="nav nav-tabs">
-      <li class="nav-item">
-        <a class="nav-link" :class="{ active: activeTab === 'completed' }" @click="activeTab = 'completed'">Completed Games</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" :class="{ active: activeTab === 'active' }" @click="activeTab = 'active'">Active Games</a>
-      </li>
-    </ul>
+    <el-tabs v-model="currentTab">
+      <el-tab-pane label="Completed Games" name="completed">
+        <div v-if="loading" class="text-center">
+          <el-loading :fullscreen="true" lock>
+            <span>Loading...</span>
+          </el-loading>
+        </div>
+        <div v-else>
+          <h2>Completed Games</h2>
+          <el-table :data="paginatedCompletedGames" style="width: 100%" stripe border>
+            <el-table-column prop="game_id" label="Game ID" width="100" sortable></el-table-column>
+            <el-table-column prop="date" label="Date" width="180" sortable>
+              <template #default="scope">
+                {{ new Date(scope.row.date).toLocaleString() }}
+              </template>
+            </el-table-column>
+            <el-table-column prop="bank" label="Bank" width="150">
+              <template #default="scope">
+                {{ calculateTotalPrice([...scope.row.x2_wins, ...scope.row.x3_wins, ...scope.row.x5_wins, ...scope.row.x50_wins]) }}$
+              </template>
+            </el-table-column>
+            <el-table-column prop="players" label="Players" width="100" sortable></el-table-column>
+            <el-table-column label="X2 Amount">
+              <template #default="scope">
+                <div class="item-list">
+                  <div v-for="(item, index) in scope.row.x2_wins.slice(0, 2)" :key="index" class="item">
+                    <img :src="item.image_url" :alt="item.name" class="item-image" @error="imageError" />
+                    <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
+                  </div>
+                  <div v-if="scope.row.x2_wins.length > 2" class="item-more">
+                    +{{ scope.row.x2_wins.length - 2 }} more
+                  </div>
+                </div>
+                <div class="total-price">Total: {{ calculateTotalPrice(scope.row.x2_wins) }}$</div>
+              </template>
+            </el-table-column>
+            <el-table-column label="X3 Amount">
+              <template #default="scope">
+                <div class="item-list">
+                  <div v-for="(item, index) in scope.row.x3_wins.slice(0, 2)" :key="index" class="item">
+                    <img :src="item.image_url" :alt="item.name" class="item-image" @error="imageError" />
+                    <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
+                  </div>
+                  <div v-if="scope.row.x3_wins.length > 2" class="item-more">
+                    +{{ scope.row.x3_wins.length - 2 }} more
+                  </div>
+                </div>
+                <div class="total-price">Total: {{ calculateTotalPrice(scope.row.x3_wins) }}$</div>
+              </template>
+            </el-table-column>
+            <el-table-column label="X5 Amount">
+              <template #default="scope">
+                <div class="item-list">
+                  <div v-for="(item, index) in scope.row.x5_wins.slice(0, 2)" :key="index" class="item">
+                    <img :src="item.image_url" :alt="item.name" class="item-image" @error="imageError" />
+                    <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
+                  </div>
+                  <div v-if="scope.row.x5_wins.length > 2" class="item-more">
+                    +{{ scope.row.x5_wins.length - 2 }} more
+                  </div>
+                </div>
+                <div class="total-price">Total: {{ calculateTotalPrice(scope.row.x5_wins) }}$</div>
+              </template>
+            </el-table-column>
+            <el-table-column label="X50 Amount">
+              <template #default="scope">
+                <div class="item-list">
+                  <div v-for="(item, index) in scope.row.x50_wins.slice(0, 2)" :key="index" class="item">
+                    <img :src="item.image_url" :alt="item.name" class="item-image" @error="imageError" />
+                    <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
+                  </div>
+                  <div v-if="scope.row.x50_wins.length > 2" class="item-more">
+                    +{{ scope.row.x50_wins.length - 2 }} more
+                  </div>
+                </div>
+                <div class="total-price">Total: {{ calculateTotalPrice(scope.row.x50_wins) }}$</div>
+              </template>
+            </el-table-column>
+            <el-table-column prop="winner" label="Winner" width="150" sortable>
+              <template #default="scope">
+                {{ scope.row.winner || 'N/A' }}
+              </template>
+            </el-table-column>
+            <el-table-column label="Actions" width="150">
+              <template #default="scope">
+                <router-link :to="{ name: 'WheelGameDetail', params: { id: scope.row.id } }">
+                  <el-button type="primary">Details</el-button>
+                </router-link>
+              </template>
+            </el-table-column>
+          </el-table>
+          <el-pagination
+              background
+              layout="prev, pager, next"
+              :total="completedGames.length"
+              :page-size="pageSize"
+              @current-change="handleCurrentChangeCompleted"
+          ></el-pagination>
+        </div>
+      </el-tab-pane>
 
-    <div v-if="activeTab === 'completed'" class="tab">
-      <h2>Completed Games</h2>
-      <table class="table table-striped table-hover table-bordered">
-        <thead class="thead-dark">
-        <tr>
-          <th>Game ID</th>
-          <th>Date</th>
-          <th>Bank</th>
-          <th>Players</th>
-          <th>X2 Amount</th>
-          <th>X3 Amount</th>
-          <th>X5 Amount</th>
-          <th>X50 Amount</th>
-          <th>Winner</th>
-          <th>Details</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr v-for="game in completedGames" :key="game.id">
-          <td>{{ game.game_id }}</td>
-          <td>{{ new Date(game.date).toLocaleString() }}</td>
-          <td>{{ calculateTotalPrice([...game.x2_wins, ...game.x3_wins, ...game.x5_wins, ...game.x50_wins]) }}$</td>
-          <td>{{ game.players }}</td>
-          <td>
-            <div v-for="(item, index) in game.x2_wins.slice(0, 2)" :key="index" class="item">
-              <img :src="item.image_url" :alt="item.name" class="item-image" @error="imageError" />
-              <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
-            </div>
-            <div v-if="game.x2_wins.length > 2" class="item-more">
-              +{{ game.x2_wins.length - 2 }} more
-            </div>
-            <div class="total-price">Total: {{ calculateTotalPrice(game.x2_wins) }}$</div>
-          </td>
-          <td>
-            <div v-for="(item, index) in game.x3_wins.slice(0, 2)" :key="index" class="item">
-              <img :src="item.image_url" :alt="item.name" class="item-image" @error="imageError" />
-              <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
-            </div>
-            <div v-if="game.x3_wins.length > 2" class="item-more">
-              +{{ game.x3_wins.length - 2 }} more
-            </div>
-            <div class="total-price">Total: {{ calculateTotalPrice(game.x3_wins) }}$</div>
-          </td>
-          <td>
-            <div v-for="(item, index) in game.x5_wins.slice(0, 2)" :key="index" class="item">
-              <img :src="item.image_url" :alt="item.name" class="item-image" @error="imageError" />
-              <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
-            </div>
-            <div v-if="game.x5_wins.length > 2" class="item-more">
-              +{{ game.x5_wins.length - 2 }} more
-            </div>
-            <div class="total-price">Total: {{ calculateTotalPrice(game.x5_wins) }}$</div>
-          </td>
-          <td>
-            <div v-for="(item, index) in game.x50_wins.slice(0, 2)" :key="index" class="item">
-              <img :src="item.image_url" :alt="item.name" class="item-image" @error="imageError" />
-              <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
-            </div>
-            <div v-if="game.x50_wins.length > 2" class="item-more">
-              +{{ game.x50_wins.length - 2 }} more
-            </div>
-            <div class="total-price">Total: {{ calculateTotalPrice(game.x50_wins) }}$</div>
-          </td>
-          <td>{{ game.winner || 'N/A' }}</td>
-          <td>
-            <router-link :to="{ name: 'WheelGameDetail', params: { id: game.id } }" class="btn btn-primary">
-              Детали
-            </router-link>
-          </td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div v-else-if="activeTab === 'active'" class="tab">
-      <h2>Active Games</h2>
-      <table class="table table-striped table-hover table-bordered">
-        <thead class="thead-dark">
-        <tr>
-          <th>Game ID</th>
-          <th>Date</th>
-          <th>Bank</th>
-          <th>Players</th>
-          <th>X2 Amount</th>
-          <th>X3 Amount</th>
-          <th>X5 Amount</th>
-          <th>X50 Amount</th>
-          <th>Details</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr v-for="game in activeGames" :key="game.id">
-          <td>{{ game.game_id }}</td>
-          <td>{{ new Date(game.date).toLocaleString() }}</td>
-          <td>{{ calculateTotalPrice([...game.x2_wins, ...game.x3_wins, ...game.x5_wins, ...game.x50_wins]) }}$</td>
-          <td>{{ game.players }}</td>
-          <td>
-            <div v-for="(item, index) in game.x2_wins.slice(0, 2)" :key="index" class="item">
-              <img :src="item.image_url" :alt="item.name" class="item-image" @error="imageError" />
-              <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
-            </div>
-            <div v-if="game.x2_wins.length > 2" class="item-more">
-              +{{ game.x2_wins.length - 2 }} more
-            </div>
-            <div class="total-price">Total: {{ calculateTotalPrice(game.x2_wins) }}$</div>
-          </td>
-          <td>
-            <div v-for="(item, index) in game.x3_wins.slice(0, 2)" :key="index" class="item">
-              <img :src="item.image_url" :alt="item.name" class="item-image" @error="imageError" />
-              <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
-            </div>
-            <div v-if="game.x3_wins.length > 2" class="item-more">
-              +{{ game.x3_wins.length - 2 }} more
-            </div>
-            <div class="total-price">Total: {{ calculateTotalPrice(game.x3_wins) }}$</div>
-          </td>
-          <td>
-            <div v-for="(item, index) in game.x5_wins.slice(0, 2)" :key="index" class="item">
-              <img :src="item.image_url" :alt="item.name" class="item-image" @error="imageError" />
-              <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
-            </div>
-            <div v-if="game.x5_wins.length > 2" class="item-more">
-              +{{ game.x5_wins.length - 2 }} more
-            </div>
-            <div class="total-price">Total: {{ calculateTotalPrice(game.x5_wins) }}$</div>
-          </td>
-          <td>
-            <div v-for="(item, index) in game.x50_wins.slice(0, 2)" :key="index" class="item">
-              <img :src="item.image_url" :alt="item.name" class="item-image" @error="imageError" />
-              <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
-            </div>
-            <div v-if="game.x50_wins.length > 2" class="item-more">
-              +{{ game.x50_wins.length - 2 }} more
-            </div>
-            <div class="total-price">Total: {{ calculateTotalPrice(game.x50_wins) }}$</div>
-          </td>
-          <td>
-            <router-link :to="{ name: 'WheelGameDetail', params: { id: game.id } }" class="btn btn-primary">
-              Детали
-            </router-link>
-          </td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+      <el-tab-pane label="Active Games" name="active">
+        <div v-if="loading" class="text-center">
+          <el-loading :fullscreen="true" lock>
+            <span>Loading...</span>
+          </el-loading>
+        </div>
+        <div v-else>
+          <h2>Active Games</h2>
+          <el-table :data="paginatedActiveGames" style="width: 100%" stripe border>
+            <el-table-column prop="game_id" label="Game ID" width="100" sortable></el-table-column>
+            <el-table-column prop="date" label="Date" width="180" sortable>
+              <template #default="scope">
+                {{ new Date(scope.row.date).toLocaleString() }}
+              </template>
+            </el-table-column>
+            <el-table-column prop="bank" label="Bank" width="150">
+              <template #default="scope">
+                {{ calculateTotalPrice([...scope.row.x2_wins, ...scope.row.x3_wins, ...scope.row.x5_wins, ...scope.row.x50_wins]) }}$
+              </template>
+            </el-table-column>
+            <el-table-column prop="players" label="Players" width="100" sortable></el-table-column>
+            <el-table-column label="X2 Amount">
+              <template #default="scope">
+                <div class="item-list">
+                  <div v-for="(item, index) in scope.row.x2_wins.slice(0, 2)" :key="index" class="item">
+                    <img :src="item.image_url" :alt="item.name" class="item-image" @error="imageError" />
+                    <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
+                  </div>
+                  <div v-if="scope.row.x2_wins.length > 2" class="item-more">
+                    +{{ scope.row.x2_wins.length - 2 }} more
+                  </div>
+                </div>
+                <div class="total-price">Total: {{ calculateTotalPrice(scope.row.x2_wins) }}$</div>
+              </template>
+            </el-table-column>
+            <el-table-column label="X3 Amount">
+              <template #default="scope">
+                <div class="item-list">
+                  <div v-for="(item, index) in scope.row.x3_wins.slice(0, 2)" :key="index" class="item">
+                    <img :src="item.image_url" :alt="item.name" class="item-image" @error="imageError" />
+                    <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
+                  </div>
+                  <div v-if="scope.row.x3_wins.length > 2" class="item-more">
+                    +{{ scope.row.x3_wins.length - 2 }} more
+                  </div>
+                </div>
+                <div class="total-price">Total: {{ calculateTotalPrice(scope.row.x3_wins) }}$</div>
+              </template>
+            </el-table-column>
+            <el-table-column label="X5 Amount">
+              <template #default="scope">
+                <div class="item-list">
+                  <div v-for="(item, index) in scope.row.x5_wins.slice(0, 2)" :key="index" class="item">
+                    <img :src="item.image_url" :alt="item.name" class="item-image" @error="imageError" />
+                    <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
+                  </div>
+                  <div v-if="scope.row.x5_wins.length > 2" class="item-more">
+                    +{{ scope.row.x5_wins.length - 2 }} more
+                  </div>
+                </div>
+                <div class="total-price">Total: {{ calculateTotalPrice(scope.row.x5_wins) }}$</div>
+              </template>
+            </el-table-column>
+            <el-table-column label="X50 Amount">
+              <template #default="scope">
+                <div class="item-list">
+                  <div v-for="(item, index) in scope.row.x50_wins.slice(0, 2)" :key="index" class="item">
+                    <img :src="item.image_url" :alt="item.name" class="item-image" @error="imageError" />
+                    <span>{{ item.name }} ({{ item.rarity }}) - {{ item.price }}$</span>
+                  </div>
+                  <div v-if="scope.row.x50_wins.length > 2" class="item-more">
+                    +{{ scope.row.x50_wins.length - 2 }} more
+                  </div>
+                </div>
+                <div class="total-price">Total: {{ calculateTotalPrice(scope.row.x50_wins) }}$</div>
+              </template>
+            </el-table-column>
+            <el-table-column label="Actions" width="150">
+              <template #default="scope">
+                <router-link :to="{ name: 'WheelGameDetail', params: { id: scope.row.id } }">
+                  <el-button type="primary">Details</el-button>
+                </router-link>
+              </template>
+            </el-table-column>
+          </el-table>
+          <el-pagination
+              background
+              layout="prev, pager, next"
+              :total="activeGames.length"
+              :page-size="pageSize"
+              @current-change="handleCurrentChangeActive"
+          ></el-pagination>
+        </div>
+      </el-tab-pane>
+    </el-tabs>
+  </el-container>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 
 const completedGames = ref([]);
 const activeGames = ref([]);
-const activeTab = ref('completed');  // Для управления активной вкладкой
+const loading = ref(false);
+const currentTab = ref('completed');
+const pageSize = ref(2);
+const currentPageCompleted = ref(1);
+const currentPageActive = ref(1);
+
+const paginatedCompletedGames = computed(() => {
+  const start = (currentPageCompleted.value - 1) * pageSize.value;
+  return completedGames.value.slice(start, start + pageSize.value);
+});
+
+const paginatedActiveGames = computed(() => {
+  const start = (currentPageActive.value - 1) * pageSize.value;
+  return activeGames.value.slice(start, start + pageSize.value);
+});
 
 const fetchCompletedGames = async () => {
   try {
+    loading.value = true;
     const response = await fetch('http://localhost:8000/wheelgame/');
     if (!response.ok) {
       throw new Error('Network response was not ok');
@@ -177,11 +236,14 @@ const fetchCompletedGames = async () => {
     completedGames.value = games.filter(game => !game.is_active);
   } catch (error) {
     console.error('Error fetching completed games:', error);
+  } finally {
+    loading.value = false;
   }
 };
 
 const fetchActiveGames = async () => {
   try {
+    loading.value = true;
     const response = await fetch('http://localhost:8000/wheelgame/activegames/');
     if (!response.ok) {
       throw new Error('Network response was not ok');
@@ -190,15 +252,25 @@ const fetchActiveGames = async () => {
     activeGames.value = data.active_wheel_games;
   } catch (error) {
     console.error('Error fetching active games:', error);
+  } finally {
+    loading.value = false;
   }
 };
 
 const imageError = (event) => {
-  event.target.src = 'https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpoo6m1FBRp3_bGcjhQ09-jq5WYh8j3KqnUjlRd4cJ5nqfC9Inz3VHtrRJrNmj6d4XEdlBqZw7R-VTqxr-6hJS-uJjAm3FnsnQi-z-DyGAd0sdD';
+  event.target.src = 'https://via.placeholder.com/100x50?text=No+Image';
 };
 
 const calculateTotalPrice = (items) => {
   return items.reduce((total, item) => total + item.price, 0);
+};
+
+const handleCurrentChangeCompleted = (page) => {
+  currentPageCompleted.value = page;
+};
+
+const handleCurrentChangeActive = (page) => {
+  currentPageActive.value = page;
 };
 
 onMounted(() => {
@@ -208,19 +280,15 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.table-striped tbody tr:nth-of-type(odd) {
-  background-color: #f9f9f9;
+.el-table {
+  margin-top: 20px;
 }
 
-.table-hover tbody tr:hover {
-  background-color: #f5f5f5;
-}
 
-.table thead th {
-  background-color: #343a40;
-  color: white;
+.item-list {
+  display: flex;
+  flex-direction: column;
 }
-
 
 .item {
   display: flex;
@@ -261,9 +329,5 @@ onMounted(() => {
 .total-price {
   font-weight: bold;
   margin-top: 5px;
-}
-
-.nav-link {
-  cursor: pointer;
 }
 </style>
