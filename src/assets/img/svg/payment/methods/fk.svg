@@ -1,0 +1,24 @@
+<svg width="120" height="50" viewBox="0 0 120 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Payment systems">
+<g id="Vector">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M48.4577 2H67.6077L64.7826 5.88401H49.4545C48.9044 5.88401 48.4577 6.32978 48.4577 6.88088V8.99781L43.9041 15.2574V5.88495C43.9041 3.73981 45.6429 2.00094 47.7881 2.00094L48.4577 2ZM43.905 20.948V31.8646H48.4586V18.4727H55.4225V14.5887H48.531L43.905 20.948Z" fill="url(#paint0_linear_3084_21106)"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M59.3057 18.6157L71.3931 2H75.9703L65.7054 16.1113L77.1515 31.8646H72.516L63.3863 19.2984L63.0552 19.7536V31.8636H59.3057V18.6157Z" fill="url(#paint1_linear_3084_21106)"/>
+<path d="M28 38H30.5038L32.4513 45.3035L34.3987 38H36.6398L38.7418 45.3035L40.5347 38H42.9767L39.7619 48H37.3817L35.4652 40.7427L33.4868 48H31.1066L28 38Z" fill="white"/>
+<path d="M47.3097 38H50.2463L53.863 48H51.4209L50.5245 45.3652H46.8615L45.9805 48H43.6003L47.3097 38ZM49.999 43.7627L48.7316 40.0031H48.6698L47.4024 43.7627H49.999Z" fill="white"/>
+<path d="M55.4392 38H57.8503V46.2897H62.7807V48H55.4392V38Z" fill="white"/>
+<path d="M64.8684 38H67.2796V46.2897H72.21V48H64.8684V38Z" fill="white"/>
+<path d="M74.2976 38H81.9483V39.7103H76.7087V42.0062H81.4382V43.7165H76.7087V46.2897H82.1028V48H74.2976V38Z" fill="white"/>
+<path d="M86.5133 39.7103H83.4221V38H92.0001V39.7103H88.9244V48H86.5133V39.7103Z" fill="white"/>
+</g>
+</g>
+<defs>
+<linearGradient id="paint0_linear_3084_21106" x1="27.7916" y1="1.86528" x2="73.7694" y2="75.134" gradientUnits="userSpaceOnUse">
+<stop stop-color="#0094FF"/>
+<stop offset="1" stop-color="#8F00FF"/>
+</linearGradient>
+<linearGradient id="paint1_linear_3084_21106" x1="-27.511" y1="1.86528" x2="11.9316" y2="85.3518" gradientUnits="userSpaceOnUse">
+<stop stop-color="#0094FF"/>
+<stop offset="1" stop-color="#8F00FF"/>
+</linearGradient>
+</defs>
+</svg>
