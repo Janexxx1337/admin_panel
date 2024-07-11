@@ -1,0 +1,313 @@
+@font-face {
+  font-family: icomoon; /* имя, которое вы будете использовать для обращения к шрифту в CSS */
+  src: url('/fonts/icomoon/icomoon.ttf') format('truetype'); /* путь к файлу шрифта */
+  font-weight: normal;
+  font-style: normal;
+  font-display: block; /* Опционально: управляет отображением шрифта во время загрузки */
+}
+
+.icon {
+  position: relative;
+  color: inherit;
+  /* stylelint-disable font-family-no-missing-generic-family-keyword */
+  font-family: icomoon !important;
+  /* stylelint-enable  font-family-no-missing-generic-family-keyword */
+  font-style: normal;
+  font-weight: 400;
+  font-variant: normal;
+  text-transform: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale
+}
+
+.icon-ai-generate-variation::before {
+  content: "\e900";
+}
+
+.icon-bag-dollar::before {
+  content: "\e901";
+}
+
+.icon-campaign::before {
+  content: "\e902";
+}
+
+.icon-cashflow::before {
+  content: "\e903";
+}
+/* e904 зарезервировано */
+.icon-check::before {
+  content: "\e905";
+}
+
+.icon-check-circle::before {
+  content: "\e906";
+}
+
+.icon-confetti::before {
+  content: "\e907";
+}
+
+.icon-controller::before {
+  content: "\e908";
+}
+
+.icon-cross-x::before {
+  content: "\e909";
+}
+
+.icon-discount::before {
+  content: "\e90a";
+}
+
+.icon-dollar::before {
+  content: "\e90b";
+}
+
+.icon-expand::before {
+  content: "\e90c";
+}
+
+.icon-filter::before {
+  content: "\e90d";
+}
+
+.icon-gaming::before {
+  content: "\e90e";
+}
+
+.icon-gift::before {
+  content: "\e90f";
+}
+
+.icon-gold::before {
+  content: "\e910";
+}
+
+.icon-info::before {
+  content: "\e911";
+}
+
+.icon-information-circle::before {
+  content: "\e912";
+}
+
+.icon-lock::before {
+  content: "\e913";
+}
+
+.icon-logout::before {
+  content: "\e914";
+}
+
+.icon-payment::before {
+  content: "\e915";
+}
+
+.icon-payment-1::before {
+  content: "\e916";
+}
+
+.icon-pencil--change-edit::before {
+  content: "\e917";
+}
+
+.icon-platinum::before {
+  content: "\e918";
+}
+
+.icon-Plus::before {
+  content: "\e919";
+}
+
+.icon-removeunlink::before {
+  content: "\e91a";
+}
+
+.icon-settings::before {
+  content: "\e91b";
+}
+
+.icon-shopping-cart::before {
+  content: "\e91c";
+}
+
+.icon-silver::before {
+  content: "\e91d";
+}
+
+.icon-star-badge--ribbon::before {
+  content: "\e91e";
+}
+
+.icon-stream::before {
+  content: "\e91f";
+}
+
+.icon-US::before {
+  content: "\e920";
+}
+/* e921, e922, e923 зарезервированы */
+.icon-user-add-plus::before {
+  content: "\e924";
+}
+
+.icon-user-identifier-card::before {
+  content: "\e925";
+}
+
+.icon-volume-level-high::before {
+  content: "\e926";
+}
+
+.icon-volume-mute::before {
+  content: "\e927";
+}
+
+.icon-Case::before {
+  content: "\e928";
+}
+
+.icon-Classic::before {
+  content: "\e929";
+}
+
+.icon-Coinflip::before {
+  content: "\e92a";
+}
+
+.icon-copy::before {
+  content: "\e92b";
+}
+
+.icon-Crash::before {
+  content: "\e92c";
+}
+
+.icon-Daily-free::before {
+  content: "\e92d";
+}
+
+.icon-down::before {
+  content: "\e92e";
+}
+
+.icon-history::before {
+  content: "\e92f";
+}
+
+.icon-left::before {
+  content: "\e930";
+}
+
+.icon-link::before {
+  content: "\e931";
+}
+
+.icon-Menu::before {
+  content: "\e932";
+}
+
+.icon-online::before {
+  content: "\e933";
+}
+
+.icon-right::before {
+  content: "\e934";
+}
+
+.icon-shield::before {
+  content: "\e935";
+}
+
+.icon-sort-down::before {
+  content: "\e936";
+}
+
+.icon-sort-up::before {
+  content: "\e937";
+}
+
+.icon-trophy::before {
+  content: "\e938";
+}
+
+.icon-up::before {
+  content: "\e939";
+}
+
+.icon-updete::before {
+  content: "\e93a";
+}
+
+.icon-Upgrade::before {
+  content: "\e93b";
+}
+
+.icon-user-circle-single::before {
+  content: "\e93c";
+}
+
+.icon-user-multiple-group::before {
+  content: "\e93d";
+}
+
+.icon-Wait::before {
+  content: "\e93e";
+}
+
+.icon-Wheel::before {
+  content: "\e93f";
+}
+
+.icon-payment-menu::before {
+  content: "\e952";
+}
+
+.icon-Money::before {
+  content: "\e953";
+}
+
+.icon-Partner::before {
+  content: "\e954";
+}
+
+.icon-Support::before {
+  content: "\e955";
+}
+
+.icon-converter-loop::before {
+  content: "\e956";
+}
+
+.icon-calendar::before {
+  content: "\e957";
+}
+
+.icon-gun::before {
+  content: "\e958";
+}
+
+.icon-bank::before {
+  content: "\e959";
+}
+
+.icon-cl-items::before {
+  content: "\e960";
+}
+
+.icon-flash::before {
+  content: "\e961";
+}
+
+.icon-arrow-right::before {
+  content: "\e962";
+}
+
+.icon-arrow-left::before {
+  content: "\e963";
+}
+
+.icon-open-view::before {
+  content: "\e964";
+}
