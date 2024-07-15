@@ -3,13 +3,23 @@
     <el-container>
       <el-aside width="300px">
         <div class="inventory">
+          <el-button @click="goBack" class="back-button">
+      <span class="material-symbols-outlined">
+        arrow_back
+      </span>
+            <span>Назад</span>
+          </el-button>
           <div class="inventory_bets">
             <h1>Ставки</h1>
             <ul>
-              <li @click="selectBet('X2')">X2</li>
-              <li @click="selectBet('X3')">X3</li>
-              <li @click="selectBet('X5')">X5</li>
-              <li @click="selectBet('X50')">X50</li>
+              <li
+                  v-for="bet in bets"
+                  :key="bet"
+                  @click="selectBet(bet)"
+                  :class="{ active: bet === winningBet }"
+              >
+                {{ bet }}
+              </li>
             </ul>
           </div>
           <h2>Поставленные предметы</h2>
@@ -34,33 +44,47 @@
       <el-main>
         <div class="game_details">
           <div class="game_details-cards">
-            <el-card>
-              <span>Игра #2299292</span>
+            <el-card class="game-card">
+              <div class="game-card-content">
+                <span class="game-card-title">Игра</span>
+                <span>#2299292</span>
+              </div>
             </el-card>
-            <el-card>
-              <span>БАНК</span>
-              <span>150000044$</span>
+            <el-card class="game-card">
+              <div class="game-card-content">
+                <span class="game-card-title">БАНК</span>
+                <span>150000044$</span>
+              </div>
             </el-card>
-            <el-card>
-              <span>Айтемы</span>
-              <span>34</span>
+            <el-card class="game-card">
+              <div class="game-card-content">
+                <span class="game-card-title">Айтемы</span>
+                <span>34</span>
+              </div>
             </el-card>
-            <el-card>
-              <span>Игроки</span>
-              <span>15</span>
+            <el-card class="game-card">
+              <div class="game-card-content">
+                <span class="game-card-title">Игроки</span>
+                <span>15</span>
+              </div>
             </el-card>
-            <el-card>
-              <span>Выиграшнная ставка</span>
-              <br/>
-              <span>{{ winningBet }}</span>
+            <el-card class="game-card">
+              <div class="game-card-content">
+                <span class="game-card-title">Выиграшнная ставка</span>
+                <span>{{ winningBet }}</span>
+              </div>
             </el-card>
-            <el-card>
-              <span>Выиграшнный билет</span>
-              <span>150000044$</span>
+            <el-card class="game-card">
+              <div class="game-card-content">
+                <span class="game-card-title">Выиграшнный билет</span>
+                <span>150000044$</span>
+              </div>
             </el-card>
-            <el-card>
-              <span>Хеш игры</span>
-              <span>423434394939BFjdfnfdjdfi992</span>
+            <el-card class="game-card">
+              <div class="game-card-content">
+                <span class="game-card-title">Хеш игры</span>
+                <span>423434394939BFjdfnfdjdfi992</span>
+              </div>
             </el-card>
           </div>
         </div>
@@ -70,7 +94,7 @@
           <el-table-column prop="playerName" label="Имя игрока" width="150"></el-table-column>
           <el-table-column prop="quantity" label="Кол-во предметов" width="180">
             <template v-slot="scope">
-              <div @click="showDetails(scope.row)" class="item-details">
+              <div @click="showDetails()" class="item-details">
                 <img v-for="(img, index) in scope.row.images" :key="index" :src="img" alt="item" class="table-item-image"/>
                 {{ scope.row.quantity > 2 ? scope.row.quantity + " +" : scope.row.quantity }}
               </div>
@@ -96,22 +120,12 @@
         ></el-pagination>
       </el-main>
     </el-container>
-
-    <el-dialog :visible.sync="dialogVisible" title="Детали предметов">
-      <div v-if="selectedItem">
-        <p><strong>Игрок:</strong> {{ selectedItem.playerName }}</p>
-        <p><strong>Ставка:</strong> {{ selectedItem.bet }}</p>
-        <p><strong>Сумма:</strong> {{ selectedItem.total }}$</p>
-        <div class="item-images">
-          <img v-for="(img, index) in selectedItem.images" :key="index" :src="img" alt="item" class="dialog-item-image"/>
-        </div>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue';
+import { useRouter } from 'vue-router';
 
 const items = ref([
   {
@@ -209,8 +223,10 @@ const inventoryItems = ref([
   { image: 'https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpot621FAR17PXJZzhO7eO3g5C0m_7zO6-fwjgDscYh3r7E9N2t0Q2y-EtoZTjydY6UdwU3MwnSq1O5x-jq1JO46YOJlyV_32xwKg' },
 ]);
 
+const bets = ['X2', 'X3', 'X5', 'X50'];
+
 const dialogVisible = ref(false);
-const selectedItem = ref(null);
+ref(null);
 const currentPage = ref(1);
 const pageSize = ref(5);
 const inventoryPage = ref(1);
@@ -235,13 +251,17 @@ function handleInventoryPageChange(page) {
   inventoryPage.value = page;
 }
 
-function showDetails(item) {
-  selectedItem.value = item;
+function showDetails() {
   dialogVisible.value = true;
 }
 
 function selectBet(bet) {
   winningBet.value = bet;
+}
+
+const router = useRouter();
+function goBack() {
+  router.back();
 }
 </script>
 
@@ -284,6 +304,11 @@ ul li {
   padding: 0.5rem;
   border-radius: 0.5rem;
   cursor: pointer;
+}
+
+ul li.active {
+  background-color: #f0c674;
+  color: white;
 }
 
 .table-item-image {

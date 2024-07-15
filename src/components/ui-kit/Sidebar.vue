@@ -27,7 +27,9 @@
       </li>
       <li>
         <router-link to="/wheelgames" class="nav-link d-flex align-items-center" active-class="active">
-          <span class="material-icons me-2">games</span>
+         <span class="material-symbols-rounded me-2">
+attractions
+</span>
           Wheel
         </router-link>
       </li>
