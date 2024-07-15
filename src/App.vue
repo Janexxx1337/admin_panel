@@ -1,7 +1,12 @@
 <template>
-  <div id="app">
+  <div class="main h-100">
     <Sidebar v-if="isAuthenticated" />
-    <router-view></router-view>
+
+    <div class="content">
+      <div class="content__main">
+        <router-view></router-view>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -31,8 +36,24 @@ onMounted(() => {
 });
 </script>
 
-<style scoped>
-#app {
+<style lang="scss">
+@import "./assets/sass/app";
+
+.main {
   display: flex;
+}
+
+.content {
+  width: 100%;
+  margin-top: 5rem;
+  padding-left: 15rem;
+  padding-bottom: 4rem;
+
+  &__main {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 80.25rem;
+  }
 }
 </style>

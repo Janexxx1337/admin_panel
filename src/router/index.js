@@ -8,6 +8,8 @@ import WheelGameList from '@/components/views/Games/WheelGameList.vue';
 import CoinflipGameList from '@/components/views/Games/CoinflipGameList.vue';
 import WheelGameDetail from '@/components/views/Games/WheelGameDetail.vue';
 import CoinflipGameDetail from '@/components/views/Games/CoinflipGameDetail.vue'; // Импортируем новый компонент
+import WheelHistoryGame from '@/TestWheelDetail/wheel/WheelHistoryGame.vue'; // Импортируем новый компонент
+import CoinflipGame from '@/TestWheelDetail/coinflip/CoinflipGame.vue'; // Импортируем новый компонент
 
 const routes = [
     // другие маршруты
@@ -62,6 +64,18 @@ const routes = [
         path: '/coinflipgames/:id',
         name: 'CoinflipGameDetail',
         component: CoinflipGameDetail,
+        meta: { requiresAuth: true },
+    },
+    {
+        path: '/coinfliptest/:gameId',
+        name: 'CoinflipTest',
+        component: CoinflipGame,
+        meta: { requiresAuth: true },
+    },
+    {
+        path: '/wheeltest/:gameId',
+        name: 'WheelTest',
+        component: WheelHistoryGame,
         meta: { requiresAuth: true },
     },
 ];
