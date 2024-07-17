@@ -4,7 +4,7 @@
       <h1>Coinflip Games</h1>
     </el-header>
 
-    <el-tabs v-model="currentTab">
+    <el-tabs v-model="currentTab" type="border-card">
       <el-tab-pane label="Completed Games" name="completed">
         <div v-if="loading" class="text-center">
           <el-loading :fullscreen="true" lock>

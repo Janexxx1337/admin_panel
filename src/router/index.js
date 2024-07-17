@@ -7,7 +7,8 @@ import Withdrawals from '@/components/views/Withdrawals.vue';
 import WheelGameList from '@/components/views/Games/WheelGameList.vue';
 import CoinflipGameList from '@/components/views/Games/CoinflipGameList.vue';
 import WheelGameDetail from '@/components/views/Games/WheelGameDetail.vue';
-import CoinflipGameDetail from '@/components/views/Games/CoinflipGameDetail.vue'; // Импортируем новый компонент
+import CoinflipGameDetail from '@/components/views/Games/CoinflipGameDetail.vue';
+import Transactions from '@/components/views/Transactions.vue';
 
 const routes = [
     // другие маршруты
@@ -21,6 +22,12 @@ const routes = [
         name: 'Withdrawals',
         component: Withdrawals,
         meta: { requiresAuth: true },
+    },
+    {
+        path: '/transactions',
+        name: 'Transactions',
+        component: Transactions,
+        meta: { requiresAuth: true }
     },
     {
         path: '/users',
@@ -52,6 +59,7 @@ const routes = [
         component: CoinflipGameList,
         meta: { requiresAuth: true },
     },
+
     {
         path: '/wheelgames/:id',
         name: 'WheelGameDetail',

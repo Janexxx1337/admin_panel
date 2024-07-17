@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex flex-column flex-shrink-0 p-3 bg-light sidebar">
-    <ul class="nav nav-pills flex-column mb-auto">
+    <ul class="nav nav-pills flex-column mb-auto  container">
       <li class="nav-item">
         <router-link to="/users" class="nav-link d-flex align-items-center" active-class="active">
           <span class="material-icons me-2">people</span>
@@ -20,9 +20,9 @@
         </router-link>
       </li>
       <li>
-        <router-link to="/statistics" class="nav-link d-flex align-items-center" active-class="active">
+        <router-link to="/transactions" class="nav-link d-flex align-items-center" active-class="active">
           <span class="material-icons me-2">bar_chart</span>
-          Статистика
+          Транзакции
         </router-link>
       </li>
       <li>
