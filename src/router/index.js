@@ -9,6 +9,7 @@ import CoinflipGameList from '@/components/views/Games/CoinflipGameList.vue';
 import WheelGameDetail from '@/components/views/Games/WheelGameDetail.vue';
 import CoinflipGameDetail from '@/components/views/Games/CoinflipGameDetail.vue';
 import Transactions from '@/components/views/Transactions.vue';
+import TransactionDetail from "@/components/views/TransactionDetail.vue";
 
 const routes = [
     // другие маршруты
@@ -27,6 +28,12 @@ const routes = [
         path: '/transactions',
         name: 'Transactions',
         component: Transactions,
+        meta: { requiresAuth: true }
+    },
+    {
+        path: '/transaction/:id',
+        name: 'TransactionDetail',
+        component: TransactionDetail,
         meta: { requiresAuth: true }
     },
     {

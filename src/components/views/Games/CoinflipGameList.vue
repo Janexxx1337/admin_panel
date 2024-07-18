@@ -57,7 +57,7 @@
           <el-pagination
               background
               layout="prev, pager, next"
-              :total="games.length"
+              :total="paginatedCompletedGames.length"
               :page-size="pageSize"
               @current-change="handleCurrentChangeCompleted"
           ></el-pagination>
@@ -111,7 +111,7 @@
           <el-pagination
               background
               layout="prev, pager, next"
-              :total="activeGames.length"
+              :total="paginatedActiveGames.length"
               :page-size="pageSize"
               @current-change="handleCurrentChangeActive"
           ></el-pagination>
@@ -122,10 +122,11 @@
 </template>
 
 <script setup>
-import {ref, onMounted, computed} from 'vue';
+import { ref, computed } from 'vue';
+import { coinflipGamesData } from '@/data/CoinflipGames';
 
-const games = ref([]);
-const activeGames = ref([]);
+const completedGames = ref(coinflipGamesData.completedGames);
+const activeGames = ref(coinflipGamesData.activeGames);
 const loading = ref(false);
 const currentTab = ref('completed');
 const pageSize = ref(2);
@@ -134,45 +135,13 @@ const currentPageActive = ref(1);
 
 const paginatedCompletedGames = computed(() => {
   const start = (currentPageCompleted.value - 1) * pageSize.value;
-  return games.value.slice(start, start + pageSize.value);
+  return completedGames.value.slice(start, start + pageSize.value);
 });
 
 const paginatedActiveGames = computed(() => {
   const start = (currentPageActive.value - 1) * pageSize.value;
   return activeGames.value.slice(start, start + pageSize.value);
 });
-
-const fetchGames = async () => {
-  try {
-    loading.value = true;
-    const response = await fetch('http://localhost:8000/coinflipgame/');
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    const data = await response.json();
-    games.value = data.game_details;
-  } catch (error) {
-    console.error('Error fetching games:', error);
-  } finally {
-    loading.value = false;
-  }
-};
-
-const fetchActiveGames = async () => {
-  try {
-    loading.value = true;
-    const response = await fetch('http://localhost:8000/coinflipgame/activegames/');
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    const data = await response.json();
-    activeGames.value = data.active_games;
-  } catch (error) {
-    console.error('Error fetching active games:', error);
-  } finally {
-    loading.value = false;
-  }
-};
 
 const imageError = (event) => {
   event.target.src = 'https://via.placeholder.com/100x50?text=No+Image';
@@ -190,11 +159,8 @@ const handleCurrentChangeActive = (page) => {
   currentPageActive.value = page;
 };
 
-onMounted(() => {
-  fetchGames();
-  fetchActiveGames();
-});
 </script>
+
 <style scoped>
 .el-table {
   margin-top: 20px;

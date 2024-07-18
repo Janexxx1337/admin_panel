@@ -49,26 +49,19 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { coinflipGamesData } from '@/data/CoinflipGames';
 
 const route = useRoute();
 const router = useRouter();
 const game = ref(null);
 
-const fetchGameDetails = async (gameId) => {
-  try {
-    const response = await fetch(`http://localhost:8000/coinflipgame/${gameId}`);
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    const data = await response.json();
-    game.value = data;
-  } catch (error) {
-    console.error('Error fetching game details:', error);
-  }
+const fetchGameDetails = (gameId) => {
+  game.value = coinflipGamesData.completedGames.find(g => g.id === parseInt(gameId)) ||
+      coinflipGamesData.activeGames.find(g => g.id === parseInt(gameId));
 };
 
 const imageError = (event) => {
-  event.target.src = 'https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpoo6m1FBRp3_bGcjhQ09-jq5WYh8j3KqnUjlRd4cJ5nqfC9Inz3VHtrRJrNmj6d4XEdlBqZw7R-VTqxr-6hJS-uJjAm3FnsnQi-z-DyGAd0sdD';
+  event.target.src = 'https://via.placeholder.com/100x50?text=No+Image';
 };
 
 const formattedDate = computed(() => {
@@ -132,5 +125,4 @@ h1, h2 {
   border-radius: 10px;
   color: #fff;
 }
-
 </style>

@@ -5,7 +5,7 @@
     <div class="mb-3 d-flex justify-content-between">
       <el-input
           v-model="searchQuery"
-          placeholder="Поиск по пользователю"
+          placeholder="Поиск по Steam ID"
           clearable
           class="w-25"
       ></el-input>
@@ -32,15 +32,15 @@
           {{ new Date(scope.row.date).toLocaleDateString() }}
         </template>
       </el-table-column>
-      <el-table-column prop="user_nickname" label="Пользователь"></el-table-column>
+      <el-table-column prop="user_steam_id" label="Steam ID"></el-table-column>
     </el-table>
 
     <el-pagination
         layout="prev, pager, next"
-        :total="totalPages * 10"
-        :page-size="10"
+        :total="totalPages * itemsPerPage"
+        :page-size="itemsPerPage"
         :current-page="currentPage"
-        @current-change="fetchDeposits"
+        @current-change="handlePageChange"
         background
         class="mt-4"
     ></el-pagination>
@@ -48,21 +48,39 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useDeposits } from '@/composables/users/deposits/useDeposits.js';
+import { ref, computed, onMounted } from 'vue';
+import { depositsData } from '@/data/Deposits.js';
 
-const {
-  currentPage,
-  totalPages,
-  searchQuery,
-  filterProvider,
-  fetchDeposits,
-  uniqueProviders,
-  filteredDeposits
-} = useDeposits();
+const deposits = ref(depositsData);
+const currentPage = ref(1);
+const itemsPerPage = ref(5);
+const searchQuery = ref('');
+const filterProvider = ref('');
+
+const totalPages = computed(() => {
+  return Math.ceil(filteredDeposits.value.length / itemsPerPage.value);
+});
+
+const uniqueProviders = computed(() => {
+  const providers = deposits.value.map(deposit => deposit.provider);
+  return [...new Set(providers)];
+});
+
+const filteredDeposits = computed(() => {
+  return deposits.value.filter(deposit => {
+    return (
+        deposit.user_steam_id.toLowerCase().includes(searchQuery.value.toLowerCase()) &&
+        (filterProvider.value === '' || deposit.provider === filterProvider.value)
+    );
+  }).slice((currentPage.value - 1) * itemsPerPage.value, currentPage.value * itemsPerPage.value);
+});
+
+const handlePageChange = (page) => {
+  currentPage.value = page;
+};
 
 onMounted(() => {
-  fetchDeposits();
+  currentPage.value = 1;
 });
 </script>
 

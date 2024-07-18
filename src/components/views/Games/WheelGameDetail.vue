@@ -89,13 +89,12 @@
             </div>
           </div>
           <el-tab-pane label="Таблица ставок" name="bets">
-
             <el-divider></el-divider>
             <h2>Таблица ставок</h2>
             <el-collapse>
               <el-collapse-item
                   v-for="(betGroup, index) in pagedGroupedBets"
-                  :title="`Ставка ${betGroup.bet} - Игрок: ${betGroup.items[0]?.playerName}`"
+                  :title="`Ставка ${betGroup.bet} - Игрок: ${betGroup.items[0]?.steamID}`"
                   :name="index"
                   :key="index"
               >
@@ -104,16 +103,17 @@
                     style="width: 100%"
                     @row-click="selectRow"
                     :row-class-name="getRowClassName"
-                    stripe border
+                    stripe
+                    border
                 >
-                  <el-table-column prop="weapon_id" label="ID предмета" width="150"></el-table-column>
-                  <el-table-column prop="weapon_img" label="Предмет" width="150">
+                  <el-table-column prop="weapon_id" label="ID предмета"></el-table-column>
+                  <el-table-column prop="weapon_img" label="Предмет">
                     <template v-slot="scope">
                       <img :src="scope.row.weapon_img" alt="item" class="table-item-image"/>
                     </template>
                   </el-table-column>
-                  <el-table-column prop="amount" label="Стоимость предмета ($)" width="150"></el-table-column>
-                  <el-table-column prop="time" label="Время ставки" width="200"></el-table-column>
+                  <el-table-column prop="amount" label="Стоимость предмета ($)"></el-table-column>
+                  <el-table-column prop="time" label="Время ставки"></el-table-column>
                 </el-table>
                 <div class="table-footer">
                   <strong>Общая стоимость: {{ calculateTotalAmount(betGroup.items) }}$</strong>
@@ -134,7 +134,7 @@
             <el-collapse>
               <el-collapse-item
                   v-for="(betGroup, index) in pagedWinningGroupedBets"
-                  :title="`Ставка ${betGroup.bet} - Игрок: ${betGroup.items[0]?.playerName}`"
+                  :title="`Ставка ${betGroup.bet} - Игрок: ${betGroup.items[0]?.steamID}`"
                   :name="index"
                   :key="index"
               >
@@ -143,7 +143,8 @@
                     style="width: 100%"
                     @row-click="selectRow"
                     :row-class-name="getRowClassName"
-                    stripe border
+                    stripe
+                    border
                 >
                   <el-table-column prop="weapon_id" label="ID предмета"></el-table-column>
                   <el-table-column prop="weapon_img" label="Предмет">

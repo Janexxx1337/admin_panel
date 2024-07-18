@@ -1,12 +1,38 @@
 <template>
   <div class="container mt-4">
     <h1 class="mb-4">Выводы</h1>
-    <el-input
-        v-model="search"
-        placeholder="Поиск по имени пользователя или предмету..."
-        clearable
-        class="mb-3"
-    ></el-input>
+    <!-- Поле поиска и фильтрации -->
+    <div class="mb-3 d-flex justify-content-between">
+      <el-input
+          v-model="searchQuery"
+          placeholder="Поиск по Steam ID или предмету"
+          clearable
+          class="w-25"
+      ></el-input>
+      <el-date-picker
+          v-model="filterDateRange"
+          type="daterange"
+          range-separator="до"
+          start-placeholder="Начальная дата"
+          end-placeholder="Конечная дата"
+          class="w-25"
+          clearable
+      ></el-date-picker>
+      <el-select v-model="filterStatus" placeholder="Все статусы" clearable class="w-25">
+        <el-option value="" label="Все статусы"></el-option>
+        <el-option value="completed" label="Completed"></el-option>
+        <el-option value="pending" label="Pending"></el-option>
+      </el-select>
+      <el-select v-model="filterProvider" placeholder="Все провайдеры" clearable class="w-25">
+        <el-option value="" label="Все провайдеры"></el-option>
+        <el-option
+            v-for="provider in uniqueProviders"
+            :key="provider"
+            :label="provider"
+            :value="provider"
+        ></el-option>
+      </el-select>
+    </div>
 
     <el-table :data="paginatedWithdrawals" stripe border style="width: 100%">
       <el-table-column prop="id" label="ID" sortable>
@@ -52,12 +78,22 @@
           {{ new Date(scope.row.request_date).toLocaleDateString() }}
         </template>
       </el-table-column>
-      <el-table-column prop="user_nickname" label="Пользователь" sortable>
+      <el-table-column prop="user_steam_id" label="Steam ID" sortable>
         <template #header="scope">
-          <div @click="changeSort('user_nickname')">
-            Пользователь
+          <div @click="changeSort('user_steam_id')">
+            Steam ID
             <el-icon>
-              <span class="material-icons">{{ getSortIcon('user_nickname') }}</span>
+              <span class="material-icons">{{ getSortIcon('user_steam_id') }}</span>
+            </el-icon>
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column prop="provider" label="Провайдер" sortable>
+        <template #header="scope">
+          <div @click="changeSort('provider')">
+            Провайдер
+            <el-icon>
+              <span class="material-icons">{{ getSortIcon('provider') }}</span>
             </el-icon>
           </div>
         </template>
@@ -77,45 +113,40 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue';
-import { ElMessage } from 'element-plus';
+import {ref, computed, onMounted, watch} from 'vue';
+import {withdrawalsData} from '@/data/Withdrawals.js';
 
-const withdrawals = ref([]);
+const withdrawals = ref(withdrawalsData);
 const filteredWithdrawals = ref([]);
 const paginatedWithdrawals = ref([]);
-const search = ref('');
+const searchQuery = ref('');
+const filterDateRange = ref(null);
+const filterStatus = ref('');
+const filterProvider = ref('');
 const currentPage = ref(1);
 const itemsPerPage = 10;
-const totalPages = ref(0);
+const totalPages = ref(Math.ceil(withdrawalsData.length / itemsPerPage));
 const sortBy = ref('id');
 const sortOrder = ref('asc');
 
-const fetchWithdrawals = async (page = 1) => {
-  currentPage.value = page;
-  try {
-    const response = await fetch(`http://localhost:8000/withdrawals?page=${page}&limit=${itemsPerPage}`);
-    if (response.ok) {
-      const data = await response.json();
-      withdrawals.value = data.withdrawals;
-      totalPages.value = Math.ceil(data.total / itemsPerPage);
-      filterWithdrawals();
-      sortWithdrawals();
-    } else {
-      ElMessage.error('Не удалось загрузить выводы');
-      console.error('Failed to fetch withdrawals:', response.statusText);
-    }
-  } catch (error) {
-    ElMessage.error('Ошибка загрузки выводов');
-    console.error('Error fetching withdrawals:', error);
-  }
-};
+const uniqueProviders = computed(() => {
+  const providers = withdrawals.value.map(withdrawal => withdrawal.provider);
+  return [...new Set(providers)];
+});
 
 const filterWithdrawals = () => {
-  const query = search.value.toLowerCase();
-  filteredWithdrawals.value = withdrawals.value.filter(withdrawal =>
-      withdrawal.item_name.toLowerCase().includes(query) ||
-      withdrawal.user_nickname.toLowerCase().includes(query)
-  );
+  const query = searchQuery.value.toLowerCase();
+  filteredWithdrawals.value = withdrawals.value.filter(withdrawal => {
+    const matchesQuery = withdrawal.item_name.toLowerCase().includes(query) ||
+        withdrawal.user_steam_id.toLowerCase().includes(query);
+    const matchesDate = filterDateRange.value ?
+        (new Date(withdrawal.request_date) >= new Date(filterDateRange.value[0]) &&
+            new Date(withdrawal.request_date) <= new Date(filterDateRange.value[1])) :
+        true;
+    const matchesStatus = filterStatus.value === '' || withdrawal.status === filterStatus.value;
+    const matchesProvider = filterProvider.value === '' || withdrawal.provider === filterProvider.value;
+    return matchesQuery && matchesDate && matchesStatus && matchesProvider;
+  });
   sortWithdrawals();
 };
 
@@ -152,15 +183,15 @@ const getSortIcon = (column) => {
 
 const handlePageChange = (page) => {
   currentPage.value = page;
-  fetchWithdrawals(page);
+  updatePaginatedWithdrawals();
 };
 
 onMounted(() => {
-  fetchWithdrawals();
+  filterWithdrawals();
 });
 
-watch([sortBy, sortOrder], () => {
-  sortWithdrawals();
+watch([sortBy, sortOrder, searchQuery, filterDateRange, filterStatus, filterProvider], () => {
+  filterWithdrawals();
 });
 </script>
 
@@ -169,7 +200,7 @@ watch([sortBy, sortOrder], () => {
   margin-top: 20px;
 }
 
-.el-input {
+.el-input, .el-select, .el-date-picker {
   margin-bottom: 10px;
 }
 

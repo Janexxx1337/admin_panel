@@ -4,7 +4,7 @@
       <el-col :span="8">
         <el-input
             v-model="searchPlayer"
-            placeholder="Поиск по имени игрока"
+            placeholder="Поиск по Steam ID"
             class="search-input"
             clearable
         ></el-input>
@@ -25,7 +25,14 @@
       <el-table-column prop="id" label="ID транзакции"></el-table-column>
       <el-table-column prop="date" label="Дата"></el-table-column>
       <el-table-column prop="type" label="Тип транзакции"></el-table-column>
-      <el-table-column prop="playerName" label="Имя игрока"></el-table-column>
+      <el-table-column prop="steamID" label="Steam ID"></el-table-column>
+      <el-table-column label="Перейти">
+        <template #default="scope">
+          <router-link :to="{ name: 'TransactionDetail', params: { id: scope.row.id } }">
+            <el-button type="primary">Детали</el-button>
+          </router-link>
+        </template>
+      </el-table-column>
     </el-table>
     <el-pagination
         background
@@ -50,11 +57,11 @@ const pageSize = ref(5);
 
 const filteredTransactions = computed(() => {
   return transactions.filter(transaction => {
-    const matchesPlayer = transaction.playerName.toLowerCase().includes(searchPlayer.value.toLowerCase());
-    const matchesDate = searchDateRange.value ?
-        (new Date(transaction.date) >= new Date(searchDateRange.value[0]) &&
-            new Date(transaction.date) <= new Date(searchDateRange.value[1])) :
-        true;
+    const matchesPlayer = transaction.steamID.toLowerCase().includes(searchPlayer.value.toLowerCase());
+    const matchesDate = searchDateRange.value
+        ? new Date(transaction.date) >= new Date(searchDateRange.value[0]) &&
+        new Date(transaction.date) <= new Date(searchDateRange.value[1])
+        : true;
     return matchesPlayer && matchesDate;
   });
 });

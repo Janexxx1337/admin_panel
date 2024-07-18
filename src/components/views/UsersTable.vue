@@ -6,7 +6,7 @@
     <div class="mb-3 d-flex justify-content-between">
       <el-input
           v-model="searchQuery"
-          placeholder="Поиск по никнейму"
+          placeholder="Поиск по Steam ID"
           clearable
           class="w-25"
       ></el-input>
@@ -19,7 +19,7 @@
 
     <el-table :data="filteredUsers" stripe border style="width: 100%">
       <el-table-column prop="id" label="#"></el-table-column>
-      <el-table-column prop="nickname" label="Никнейм"></el-table-column>
+      <el-table-column prop="steam_id" label="Steam ID"></el-table-column>
       <el-table-column prop="balance" label="Баланс"></el-table-column>
       <el-table-column label="Статус оплаты">
         <template #default="scope">
@@ -57,28 +57,32 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { useUsers } from '@/composables/users/useUsers.js';
+import { usersData } from '@/data/Users.js';
 
-const { users, updateStatus } = useUsers();
-const router = useRouter();
+const users = ref(usersData);
 const searchQuery = ref('');
 const filterStatus = ref('');
-const visibleTransactions = ref({});
+const router = useRouter();
 
 const goToUser = (userId) => {
   router.push(`/user/${userId}`);
 };
 
+const updateStatus = (user) => {
+  const foundUser = users.value.find(u => u.id === user.id);
+  if (foundUser) {
+    foundUser.payment_status = user.payment_status;
+  }
+};
+
 const filteredUsers = computed(() => {
   return users.value.filter(user => {
     return (
-        user.nickname.toLowerCase().includes(searchQuery.value.toLowerCase()) &&
+        user.steam_id.toLowerCase().includes(searchQuery.value.toLowerCase()) &&
         (filterStatus.value === '' || user.payment_status === filterStatus.value)
     );
   });
 });
-
-
 </script>
 
 <style scoped>

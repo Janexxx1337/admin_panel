@@ -31,7 +31,7 @@
           <span>Транзакции</span>
         </template>
       </el-menu-item>
-      <el-sub-menu index="games">
+
         <template #title>
           <span class="material-icons me-2">sports_esports</span>
           <span>Игры</span>
@@ -48,7 +48,6 @@
             <span>Coinflip</span>
           </template>
         </el-menu-item>
-      </el-sub-menu>
     </el-menu>
     <hr>
     <div class="dropdown">

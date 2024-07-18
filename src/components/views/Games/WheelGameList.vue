@@ -14,18 +14,18 @@
         <div v-else>
           <h2>Completed Games</h2>
           <el-table :data="paginatedCompletedGames" style="width: 100%" stripe border>
-            <el-table-column prop="game_id" label="Game ID" width="100" sortable></el-table-column>
-            <el-table-column prop="date" label="Date" width="180" sortable>
+            <el-table-column prop="game_id" label="Game ID" sortable></el-table-column>
+            <el-table-column prop="date" label="Date" sortable>
               <template #default="scope">
                 {{ new Date(scope.row.date).toLocaleString() }}
               </template>
             </el-table-column>
-            <el-table-column prop="bank" label="Bank" width="150">
+            <el-table-column prop="bank" label="Bank">
               <template #default="scope">
                 {{ calculateTotalPrice([...scope.row.x2_wins, ...scope.row.x3_wins, ...scope.row.x5_wins, ...scope.row.x50_wins]) }}$
               </template>
             </el-table-column>
-            <el-table-column prop="players" label="Players" width="100" sortable></el-table-column>
+            <el-table-column prop="players" label="Players" sortable></el-table-column>
             <el-table-column label="X2 Amount">
               <template #default="scope">
                 <div class="item-list">
@@ -82,15 +82,15 @@
                 <div class="total-price">Total: {{ calculateTotalPrice(scope.row.x50_wins) }}$</div>
               </template>
             </el-table-column>
-            <el-table-column prop="winner" label="Winner" width="150" sortable>
+            <el-table-column prop="winner" label="Winner" sortable>
               <template #default="scope">
                 {{ scope.row.winner || 'N/A' }}
               </template>
             </el-table-column>
-            <el-table-column label="Actions" width="150">
+            <el-table-column label="Actions">
               <template #default="scope">
-                <router-link :to="{ name: 'WheelGameDetail', params: { id: scope.row.id } }">
-                  <el-button type="primary">Details</el-button>
+                <router-link :to="{ name: 'WheelGameDetail', params: { id: scope.row.game_id } }">
+                  <el-button type="primary">Детали</el-button>
                 </router-link>
               </template>
             </el-table-column>
@@ -98,7 +98,7 @@
           <el-pagination
               background
               layout="prev, pager, next"
-              :total="completedGames.length"
+              :total="filteredCompletedGames.length"
               :page-size="pageSize"
               @current-change="handleCurrentChangeCompleted"
           ></el-pagination>
@@ -114,18 +114,18 @@
         <div v-else>
           <h2>Active Games</h2>
           <el-table :data="paginatedActiveGames" style="width: 100%" stripe border>
-            <el-table-column prop="game_id" label="Game ID" width="100" sortable></el-table-column>
-            <el-table-column prop="date" label="Date" width="180" sortable>
+            <el-table-column prop="game_id" label="Game ID" sortable></el-table-column>
+            <el-table-column prop="date" label="Date" sortable>
               <template #default="scope">
                 {{ new Date(scope.row.date).toLocaleString() }}
               </template>
             </el-table-column>
-            <el-table-column prop="bank" label="Bank" width="150">
+            <el-table-column prop="bank" label="Bank">
               <template #default="scope">
                 {{ calculateTotalPrice([...scope.row.x2_wins, ...scope.row.x3_wins, ...scope.row.x5_wins, ...scope.row.x50_wins]) }}$
               </template>
             </el-table-column>
-            <el-table-column prop="players" label="Players" width="100" sortable></el-table-column>
+            <el-table-column prop="players" label="Players" sortable></el-table-column>
             <el-table-column label="X2 Amount">
               <template #default="scope">
                 <div class="item-list">
@@ -182,10 +182,15 @@
                 <div class="total-price">Total: {{ calculateTotalPrice(scope.row.x50_wins) }}$</div>
               </template>
             </el-table-column>
-            <el-table-column label="Actions" width="150">
+            <el-table-column prop="winner" label="Winner" sortable>
               <template #default="scope">
-                <router-link :to="{ name: 'WheelGameDetail', params: { id: scope.row.id } }">
-                  <el-button type="primary">Details</el-button>
+                {{ scope.row.winner || 'N/A' }}
+              </template>
+            </el-table-column>
+            <el-table-column label="Actions">
+              <template #default="scope">
+                <router-link :to="{ name: 'WheelGameDetail', params: { id: scope.row.game_id } }">
+                  <el-button type="primary">Детали</el-button>
                 </router-link>
               </template>
             </el-table-column>
@@ -193,7 +198,7 @@
           <el-pagination
               background
               layout="prev, pager, next"
-              :total="activeGames.length"
+              :total="filteredActiveGames.length"
               :page-size="pageSize"
               @current-change="handleCurrentChangeActive"
           ></el-pagination>
@@ -204,10 +209,11 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed } from 'vue';
+import { wheelGamesData } from '@/data/WheelGames';
 
-const completedGames = ref([]);
-const activeGames = ref([]);
+const completedGames = ref(wheelGamesData.completedGames);
+const activeGames = ref(wheelGamesData.activeGames);
 const loading = ref(false);
 const currentTab = ref('completed');
 const pageSize = ref(2);
@@ -216,46 +222,21 @@ const currentPageActive = ref(1);
 
 const paginatedCompletedGames = computed(() => {
   const start = (currentPageCompleted.value - 1) * pageSize.value;
-  return completedGames.value.slice(start, start + pageSize.value);
+  return filteredCompletedGames.value.slice(start, start + pageSize.value);
 });
 
 const paginatedActiveGames = computed(() => {
   const start = (currentPageActive.value - 1) * pageSize.value;
-  return activeGames.value.slice(start, start + pageSize.value);
+  return filteredActiveGames.value.slice(start, start + pageSize.value);
 });
 
-const fetchCompletedGames = async () => {
-  try {
-    loading.value = true;
-    const response = await fetch('http://localhost:8000/wheelgame/');
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    const data = await response.json();
-    const games = data.wheel_games;
-    completedGames.value = games.filter(game => !game.is_active);
-  } catch (error) {
-    console.error('Error fetching completed games:', error);
-  } finally {
-    loading.value = false;
-  }
-};
+const filteredCompletedGames = computed(() => {
+  return completedGames.value;
+});
 
-const fetchActiveGames = async () => {
-  try {
-    loading.value = true;
-    const response = await fetch('http://localhost:8000/wheelgame/activegames/');
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    const data = await response.json();
-    activeGames.value = data.active_wheel_games;
-  } catch (error) {
-    console.error('Error fetching active games:', error);
-  } finally {
-    loading.value = false;
-  }
-};
+const filteredActiveGames = computed(() => {
+  return activeGames.value;
+});
 
 const imageError = (event) => {
   event.target.src = 'https://via.placeholder.com/100x50?text=No+Image';
@@ -273,17 +254,12 @@ const handleCurrentChangeActive = (page) => {
   currentPageActive.value = page;
 };
 
-onMounted(() => {
-  fetchCompletedGames();
-  fetchActiveGames();
-});
 </script>
 
 <style scoped>
 .el-table {
   margin-top: 20px;
 }
-
 
 .item-list {
   display: flex;
