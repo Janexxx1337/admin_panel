@@ -16,10 +16,21 @@
         <h2>Содержимое транзакции</h2>
         <el-collapse>
           <el-collapse-item title="Предметы и Деньги" name="1">
-            <el-table :data="transaction.items" style="width: 100%" stripe border>
+            <el-table :data="transaction.items" style="width: 100%" stripe border :show-summary="true" :summary-method="getSummaries">
               <el-table-column prop="name" label="Название"></el-table-column>
               <el-table-column prop="rarity" label="Редкость"></el-table-column>
-              <el-table-column prop="price" label="Цена"></el-table-column>
+              <el-table-column prop="price" label="Цена">
+                <template #default="scope">
+                  <div style="text-align: right;">{{ scope.row.price }}</div>
+                </template>
+              </el-table-column>
+              <template #footer="scope">
+                <el-table-column :span="3">
+                  <template v-if="scope.columnIndex === 2">
+                    <div>{{ scope.sums[2] }}</div>
+                  </template>
+                </el-table-column>
+              </template>
             </el-table>
           </el-collapse-item>
         </el-collapse>
@@ -50,6 +61,31 @@ const formattedDate = computed(() => {
 
 const goBack = () => {
   router.back();
+};
+
+const getSummaries = (param) => {
+  const { columns, data } = param;
+  const sums = [];
+  columns.forEach((column, index) => {
+    if (index === 0) {
+      sums[index] = 'Total';
+      return;
+    }
+    const values = data.map(item => Number(item[column.property]));
+    if (!values.every(value => isNaN(value))) {
+      sums[index] = values.reduce((prev, curr) => {
+        const value = Number(curr);
+        if (!isNaN(value)) {
+          return prev + curr;
+        } else {
+          return prev;
+        }
+      }, 0) + '$';
+    } else {
+      sums[index] = '';
+    }
+  });
+  return sums;
 };
 
 onMounted(() => {
@@ -111,4 +147,5 @@ h1, h2 {
   text-align: center;
   color: #333;
 }
+
 </style>

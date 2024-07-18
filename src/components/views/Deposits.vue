@@ -20,7 +20,9 @@
       </el-select>
     </div>
 
-    <el-table :data="filteredDeposits" stripe style="width: 100%">
+    <el-table :data="filteredDeposits"
+              stripe border
+              style="width: 100%">
       <el-table-column prop="amount" label="Сумма">
         <template #default="scope">
           <el-tag type="info">{{ scope.row.amount }}$</el-tag>
@@ -48,8 +50,8 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
-import { depositsData } from '@/data/Deposits.js';
+import {ref, computed, onMounted} from 'vue';
+import {depositsData} from '@/data/Deposits.js';
 
 const deposits = ref(depositsData);
 const currentPage = ref(1);
