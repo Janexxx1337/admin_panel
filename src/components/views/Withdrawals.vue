@@ -1,63 +1,84 @@
 <template>
   <div class="container mt-4">
     <h1 class="mb-4">Выводы</h1>
-    <input v-model="search" @input="filterWithdrawals" class="form-control mb-3" placeholder="Поиск по имени пользователя или предмету...">
-    <table class="table table-hover table-striped">
-      <thead class="thead-dark">
-      <tr>
-        <th scope="col" @click="changeSort('id')">
-          ID
-          <span class="material-icons">
-            {{ getSortIcon('id') }}
-          </span>
-        </th>
-        <th scope="col" @click="changeSort('item_name')">
-          Предмет
-          <span class="material-icons">
-            {{ getSortIcon('item_name') }}
-          </span>
-        </th>
-        <th scope="col" @click="changeSort('status')">
-          Статус
-          <span class="material-icons">
-            {{ getSortIcon('status') }}
-          </span>
-        </th>
-        <th scope="col" @click="changeSort('request_date')">
-          Дата запроса
-          <span class="material-icons">
-            {{ getSortIcon('request_date') }}
-          </span>
-        </th>
-        <th scope="col" @click="changeSort('user_nickname')">
-          Пользователь
-          <span class="material-icons">
-            {{ getSortIcon('user_nickname') }}
-          </span>
-        </th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr v-for="withdrawal in paginatedWithdrawals" :key="withdrawal.id">
-        <td>{{ withdrawal.id }}</td>
-        <td>{{ withdrawal.item_name }}</td>
-        <td>{{ withdrawal.status }}</td>
-        <td>{{ new Date(withdrawal.request_date).toLocaleDateString() }}</td>
-        <td>{{ withdrawal.user_nickname }}</td>
-      </tr>
-      </tbody>
-    </table>
-    <pagination
+    <el-input
+        v-model="search"
+        placeholder="Поиск по имени пользователя или предмету..."
+        clearable
+        class="mb-3"
+    ></el-input>
+
+    <el-table :data="paginatedWithdrawals" stripe border style="width: 100%">
+      <el-table-column prop="id" label="ID" sortable>
+        <template #header="scope">
+          <div @click="changeSort('id')">
+            ID
+            <el-icon>
+              <span class="material-icons">{{ getSortIcon('id') }}</span>
+            </el-icon>
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column prop="item_name" label="Предмет" sortable>
+        <template #header="scope">
+          <div @click="changeSort('item_name')">
+            Предмет
+            <el-icon>
+              <span class="material-icons">{{ getSortIcon('item_name') }}</span>
+            </el-icon>
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column prop="status" label="Статус" sortable>
+        <template #header="scope">
+          <div @click="changeSort('status')">
+            Статус
+            <el-icon>
+              <span class="material-icons">{{ getSortIcon('status') }}</span>
+            </el-icon>
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column prop="request_date" label="Дата запроса" sortable>
+        <template #header="scope">
+          <div @click="changeSort('request_date')">
+            Дата запроса
+            <el-icon>
+              <span class="material-icons">{{ getSortIcon('request_date') }}</span>
+            </el-icon>
+          </div>
+        </template>
+        <template #default="scope">
+          {{ new Date(scope.row.request_date).toLocaleDateString() }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="user_nickname" label="Пользователь" sortable>
+        <template #header="scope">
+          <div @click="changeSort('user_nickname')">
+            Пользователь
+            <el-icon>
+              <span class="material-icons">{{ getSortIcon('user_nickname') }}</span>
+            </el-icon>
+          </div>
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <el-pagination
         :current-page="currentPage"
-        :total-pages="totalPages"
-        @page-changed="fetchWithdrawals"
-    ></pagination>
+        :page-size="itemsPerPage"
+        :total="totalPages * itemsPerPage"
+        @current-change="handlePageChange"
+        layout="prev, pager, next"
+        background
+        class="mt-4"
+    ></el-pagination>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted, watch } from 'vue';
-import Pagination from '@/components/ui-kit/Pagination.vue';
+import { ElMessage } from 'element-plus';
 
 const withdrawals = ref([]);
 const filteredWithdrawals = ref([]);
@@ -80,9 +101,11 @@ const fetchWithdrawals = async (page = 1) => {
       filterWithdrawals();
       sortWithdrawals();
     } else {
+      ElMessage.error('Не удалось загрузить выводы');
       console.error('Failed to fetch withdrawals:', response.statusText);
     }
   } catch (error) {
+    ElMessage.error('Ошибка загрузки выводов');
     console.error('Error fetching withdrawals:', error);
   }
 };
@@ -127,6 +150,11 @@ const getSortIcon = (column) => {
   return sortOrder.value === 'asc' ? 'arrow_drop_down' : 'arrow_drop_up';
 };
 
+const handlePageChange = (page) => {
+  currentPage.value = page;
+  fetchWithdrawals(page);
+};
+
 onMounted(() => {
   fetchWithdrawals();
 });
@@ -137,30 +165,24 @@ watch([sortBy, sortOrder], () => {
 </script>
 
 <style scoped>
-.table th, .table td {
-  vertical-align: middle;
+.container {
+  margin-top: 20px;
+}
+
+.el-input {
+  margin-bottom: 10px;
+}
+
+.el-table th, .el-table td {
   text-align: center;
+}
+
+.el-table th {
   cursor: pointer;
 }
 
-.table th {
-  border-bottom: 2px solid #dee2e6;
-}
-
-.table th .material-icons {
-  font-size: 18px;
-  margin-left: 5px;
+.el-icon {
   vertical-align: middle;
-}
-
-.collapse:not(.show) {
-  display: block;
-  height: 0;
-  overflow: hidden;
-  transition: height 0.35s ease;
-}
-
-.collapse.show {
-  height: auto;
+  margin-left: 5px;
 }
 </style>

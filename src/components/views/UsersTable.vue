@@ -1,91 +1,69 @@
 <template>
-  <!-- Основное содержимое -->
   <div class="container mt-4">
     <h1>Пользователи CaseStore</h1>
 
     <!-- Поле поиска и фильтрации -->
     <div class="mb-3 d-flex justify-content-between">
-      <input
+      <el-input
           v-model="searchQuery"
-          type="text"
-          class="form-control w-25"
           placeholder="Поиск по никнейму"
-      >
-      <select v-model="filterStatus" class="form-select w-25">
-        <option value="">Все</option>
-        <option value="completed">Completed</option>
-        <option value="pending">Pending</option>
-      </select>
+          clearable
+          class="w-25"
+      ></el-input>
+      <el-select v-model="filterStatus" placeholder="Все" class="w-25">
+        <el-option label="Все" value=""></el-option>
+        <el-option label="Completed" value="completed"></el-option>
+        <el-option label="Pending" value="pending"></el-option>
+      </el-select>
     </div>
 
-    <table class="table table-hover">
-      <thead class="thead-dark">
-      <tr>
-        <th scope="col">#</th>
-        <th scope="col">Никнейм</th>
-        <th scope="col">Баланс</th>
-        <th scope="col">Статус оплаты</th>
-        <th scope="col">Статус бана</th>
-        <th scope="col">Действия</th>
-        <th scope="col">Транзакции</th>
-        <th scope="col">Перейти</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr v-for="user in filteredUsers" :key="user.id">
-        <th scope="row">{{ user.id }}</th>
-        <td>{{ user.nickname }}</td>
-        <td>{{ user.balance }}</td>
-        <td :class="{'text-success': user.payment_status === 'completed', 'text-danger': user.payment_status === 'pending'}">
-          {{ user.payment_status }}
-        </td>
-        <td>
-              <span :class="{'badge bg-danger': user.banned, 'badge bg-success': !user.banned}">
-                {{ user.banned ? 'Забанен' : 'Активен' }}
-              </span>
-        </td>
-        <td @click.stop>
-          <select v-model="user.payment_status" @change="updateStatus(user)" class="form-select form-select-sm">
-            <option value="completed">Completed</option>
-            <option value="pending">Pending</option>
-          </select>
-        </td>
-        <td @click.stop>
-          <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse"
-                  :data-bs-target="'#transactions-' + user.id" aria-expanded="false"
-                  :aria-controls="'transactions-' + user.id">
-            Показать транзакции
-          </button>
-          <div :id="'transactions-' + user.id" class="collapse mt-2">
-            <ul class="list-group">
-              <li v-for="transaction in user.transactions" :key="transaction.id" class="list-group-item">
-                <span class="badge bg-info text-dark mr-2">{{ transaction.amount }}$</span>
-                <small class="text-muted">{{ new Date(transaction.transaction_date).toLocaleString() }}</small>
-                <p>{{ transaction.description }}</p>
-              </li>
-            </ul>
-          </div>
-        </td>
-        <td>
-          <button class="btn btn-secondary btn-sm d-flex align-items-center" @click="goToUser(user.id)">
+    <el-table :data="filteredUsers" stripe border style="width: 100%">
+      <el-table-column prop="id" label="#"></el-table-column>
+      <el-table-column prop="nickname" label="Никнейм"></el-table-column>
+      <el-table-column prop="balance" label="Баланс"></el-table-column>
+      <el-table-column label="Статус оплаты">
+        <template #default="scope">
+          <el-tag :type="scope.row.payment_status === 'completed' ? 'success' : 'danger'">
+            {{ scope.row.payment_status }}
+          </el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column label="Статус бана">
+        <template #default="scope">
+          <el-tag :type="scope.row.banned ? 'danger' : 'success'">
+            {{ scope.row.banned ? 'Забанен' : 'Активен' }}
+          </el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column label="Действия">
+        <template #default="scope">
+          <el-select v-model="scope.row.payment_status" @change="updateStatus(scope.row)">
+            <el-option label="Completed" value="completed"></el-option>
+            <el-option label="Pending" value="pending"></el-option>
+          </el-select>
+        </template>
+      </el-table-column>
+      <el-table-column label="Перейти">
+        <template #default="scope">
+          <el-button type="text" @click="goToUser(scope.row.id)">
             Перейти <span class="material-icons">arrow_forward</span>
-          </button>
-        </td>
-      </tr>
-      </tbody>
-    </table>
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
   </div>
 </template>
 
 <script setup>
-import {ref, computed} from 'vue';
-import {useRouter} from 'vue-router';
-import {useUsers} from '@/composables/users/useUsers.js';
+import { ref, computed } from 'vue';
+import { useRouter } from 'vue-router';
+import { useUsers } from '@/composables/users/useUsers.js';
 
-const {users, updateStatus} = useUsers();
+const { users, updateStatus } = useUsers();
 const router = useRouter();
 const searchQuery = ref('');
 const filterStatus = ref('');
+const visibleTransactions = ref({});
 
 const goToUser = (userId) => {
   router.push(`/user/${userId}`);
@@ -94,32 +72,32 @@ const goToUser = (userId) => {
 const filteredUsers = computed(() => {
   return users.value.filter(user => {
     return (
-        (user.nickname.toLowerCase().includes(searchQuery.value.toLowerCase())) &&
+        user.nickname.toLowerCase().includes(searchQuery.value.toLowerCase()) &&
         (filterStatus.value === '' || user.payment_status === filterStatus.value)
     );
   });
 });
+
+
 </script>
 
 <style scoped>
-.table th, .table td {
-  vertical-align: middle;
+.container {
+  margin-top: 20px;
+}
+
+.el-input,
+.el-select {
+  margin-bottom: 10px;
+}
+
+.el-tag {
+  font-size: 1rem;
+}
+
+.el-table th,
+.el-table td {
   text-align: center;
-}
-
-.table th {
-  border-bottom: 2px solid #dee2e6;
-}
-
-.collapse:not(.show) {
-  display: block;
-  height: 0;
-  overflow: hidden;
-  transition: height 0.35s ease;
-}
-
-.collapse.show {
-  height: auto;
 }
 
 .material-icons {

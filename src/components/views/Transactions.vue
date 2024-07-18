@@ -22,10 +22,10 @@
       </el-col>
     </el-row>
     <el-table :data="pagedTransactions" style="width: 100%" class="transactions-table" stripe border>
-      <el-table-column prop="id" label="ID транзакции" width="180"></el-table-column>
-      <el-table-column prop="date" label="Дата" width="180"></el-table-column>
-      <el-table-column prop="type" label="Тип транзакции" width="180"></el-table-column>
-      <el-table-column prop="playerName" label="Имя игрока" width="180"></el-table-column>
+      <el-table-column prop="id" label="ID транзакции"></el-table-column>
+      <el-table-column prop="date" label="Дата"></el-table-column>
+      <el-table-column prop="type" label="Тип транзакции"></el-table-column>
+      <el-table-column prop="playerName" label="Имя игрока"></el-table-column>
     </el-table>
     <el-pagination
         background
@@ -80,6 +80,7 @@ function handlePageChange(page) {
 
 .controls-row {
   margin-bottom: 20px;
+  justify-content: center;
 }
 
 .search-input,

@@ -145,14 +145,14 @@
                     :row-class-name="getRowClassName"
                     stripe border
                 >
-                  <el-table-column prop="weapon_id" label="ID предмета" width="150"></el-table-column>
-                  <el-table-column prop="weapon_img" label="Предмет" width="150">
+                  <el-table-column prop="weapon_id" label="ID предмета"></el-table-column>
+                  <el-table-column prop="weapon_img" label="Предмет">
                     <template v-slot="scope">
                       <img :src="scope.row.weapon_img" alt="item" class="table-item-image"/>
                     </template>
                   </el-table-column>
-                  <el-table-column prop="amount" label="Стоимость предмета ($)" width="150"></el-table-column>
-                  <el-table-column prop="time" label="Время ставки" width="200"></el-table-column>
+                  <el-table-column prop="amount" label="Стоимость предмета ($)"></el-table-column>
+                  <el-table-column prop="time" label="Время ставки"></el-table-column>
                 </el-table>
                 <div class="table-footer">
                   <strong>Общая стоимость: {{ calculateTotalAmount(betGroup.items) }}$</strong>

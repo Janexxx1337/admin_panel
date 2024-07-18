@@ -3,48 +3,52 @@
     <h1 class="mb-4">Депозиты</h1>
     <!-- Поле поиска и фильтрации -->
     <div class="mb-3 d-flex justify-content-between">
-      <input
+      <el-input
           v-model="searchQuery"
-          type="text"
-          class="form-control w-25"
           placeholder="Поиск по пользователю"
-      >
-      <select v-model="filterProvider" class="form-select w-25">
-        <option value="">Все провайдеры</option>
-        <option v-for="provider in uniqueProviders" :key="provider" :value="provider">{{ provider }}</option>
-      </select>
+          clearable
+          class="w-25"
+      ></el-input>
+      <el-select v-model="filterProvider" placeholder="Все провайдеры" clearable class="w-25">
+        <el-option value="" label="Все провайдеры"></el-option>
+        <el-option
+            v-for="provider in uniqueProviders"
+            :key="provider"
+            :label="provider"
+            :value="provider"
+        ></el-option>
+      </el-select>
     </div>
 
-    <table class="table table-hover">
-      <thead class="thead-dark">
-      <tr>
-        <th scope="col">Сумма</th>
-        <th scope="col">Провайдер</th>
-        <th scope="col">Дата</th>
-        <th scope="col">Пользователь</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr v-for="deposit in filteredDeposits" :key="deposit.id">
-        <td>
-          <span class="badge bg-info text-dark">{{ deposit.amount }}$</span>
-        </td>
-        <td>{{ deposit.provider }}</td>
-        <td>{{ new Date(deposit.date).toLocaleDateString() }}</td>
-        <td>{{ deposit.user_nickname }}</td>
-      </tr>
-      </tbody>
-    </table>
-    <pagination
+    <el-table :data="filteredDeposits" stripe style="width: 100%">
+      <el-table-column prop="amount" label="Сумма">
+        <template #default="scope">
+          <el-tag type="info">{{ scope.row.amount }}$</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column prop="provider" label="Провайдер"></el-table-column>
+      <el-table-column prop="date" label="Дата">
+        <template #default="scope">
+          {{ new Date(scope.row.date).toLocaleDateString() }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="user_nickname" label="Пользователь"></el-table-column>
+    </el-table>
+
+    <el-pagination
+        layout="prev, pager, next"
+        :total="totalPages * 10"
+        :page-size="10"
         :current-page="currentPage"
-        :total-pages="totalPages"
-        @page-changed="fetchDeposits"
-    ></pagination>
+        @current-change="fetchDeposits"
+        background
+        class="mt-4"
+    ></el-pagination>
   </div>
 </template>
 
 <script setup>
-import Pagination from '@/components/ui-kit/Pagination.vue';
+import { ref, onMounted } from 'vue';
 import { useDeposits } from '@/composables/users/deposits/useDeposits.js';
 
 const {
@@ -56,14 +60,28 @@ const {
   uniqueProviders,
   filteredDeposits
 } = useDeposits();
+
+onMounted(() => {
+  fetchDeposits();
+});
 </script>
 
 <style scoped>
-.table th, .table td {
-  vertical-align: middle;
+.container {
+  margin-top: 20px;
 }
 
-.badge {
+.el-input, .el-select {
+  margin-bottom: 10px;
+}
+
+.el-tag {
   font-size: 1rem;
+}
+
+.el-pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
 }
 </style>

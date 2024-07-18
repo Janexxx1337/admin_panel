@@ -1,50 +1,61 @@
 <template>
-  <div class="d-flex flex-column flex-shrink-0 p-3 bg-light sidebar">
-    <ul class="nav nav-pills flex-column mb-auto  container">
-      <li class="nav-item">
-        <router-link to="/users" class="nav-link d-flex align-items-center" active-class="active">
+  <el-aside width="240px" class="sidebar">
+    <el-menu
+        class="el-menu-vertical-demo"
+        router
+        background-color="#f9fafc"
+        text-color="#333"
+        active-text-color="#409EFF"
+    >
+      <el-menu-item index="/users">
+        <template #title>
           <span class="material-icons me-2">people</span>
-          Пользователи
-        </router-link>
-      </li>
-      <li>
-        <router-link to="/deposits" class="nav-link d-flex align-items-center" active-class="active">
+          <span>Пользователи</span>
+        </template>
+      </el-menu-item>
+      <el-menu-item index="/deposits">
+        <template #title>
           <span class="material-icons me-2">account_balance_wallet</span>
-          Депозиты
-        </router-link>
-      </li>
-      <li>
-        <router-link to="/withdrawals" class="nav-link d-flex align-items-center" active-class="active">
+          <span>Депозиты</span>
+        </template>
+      </el-menu-item>
+      <el-menu-item index="/withdrawals">
+        <template #title>
           <span class="material-icons me-2">credit_card</span>
-          Выводы
-        </router-link>
-      </li>
-      <li>
-        <router-link to="/transactions" class="nav-link d-flex align-items-center" active-class="active">
+          <span>Выводы</span>
+        </template>
+      </el-menu-item>
+      <el-menu-item index="/transactions">
+        <template #title>
           <span class="material-icons me-2">bar_chart</span>
-          Транзакции
-        </router-link>
-      </li>
-      <li>
-        <router-link to="/wheelgames" class="nav-link d-flex align-items-center" active-class="active">
-         <span class="material-symbols-rounded me-2">
-attractions
-</span>
-          Wheel
-        </router-link>
-      </li>
-      <li>
-        <router-link to="/coinflipgames" class="nav-link d-flex align-items-center" active-class="active">
-          <span class="material-icons me-2">monetization_on</span>
-          Coinflip
-        </router-link>
-      </li>
-    </ul>
+          <span>Транзакции</span>
+        </template>
+      </el-menu-item>
+      <el-sub-menu index="games">
+        <template #title>
+          <span class="material-icons me-2">sports_esports</span>
+          <span>Игры</span>
+        </template>
+        <el-menu-item index="/wheelgames">
+          <template #title>
+            <span class="material-symbols-rounded me-2">attractions</span>
+            <span>Wheel</span>
+          </template>
+        </el-menu-item>
+        <el-menu-item index="/coinflipgames">
+          <template #title>
+            <span class="material-icons me-2">monetization_on</span>
+            <span>Coinflip</span>
+          </template>
+        </el-menu-item>
+      </el-sub-menu>
+    </el-menu>
     <hr>
     <div class="dropdown">
       <a href="#" class="d-flex align-items-center link-dark text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-        <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">
+        <el-avatar src="https://github.com/mdo.png" class="avatar" />
         <strong>Админ</strong>
+        <i class="el-icon-arrow-down el-icon--right"></i>
       </a>
       <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser1">
         <li><a class="dropdown-item" href="#">Профиль</a></li>
@@ -53,7 +64,7 @@ attractions
         <li><a class="dropdown-item" href="#" @click="logout">Выход</a></li>
       </ul>
     </div>
-  </div>
+  </el-aside>
 </template>
 
 <script setup>
@@ -67,19 +78,37 @@ const { logout } = useAuth();
   height: 100vh;
   position: fixed;
   overflow-y: auto;
-  width: 15%;
+  background-color: #f9fafc;
+  padding: 20px 0;
 }
 
-.nav-link {
-  display: flex;
-  align-items: center;
+.el-menu-vertical-demo {
+  border-right: none;
 }
 
-.nav-link .material-icons {
+.el-menu-item, .el-sub-menu {
+  padding: 0 20px;
+}
+
+.el-menu-item .material-icons,
+.el-menu-item .material-symbols-rounded,
+.el-sub-menu .material-icons {
   font-size: 24px;
+  margin-right: 10px;
 }
 
-.nav-link.active {
-  background-color: #e9ecef;
+.avatar {
+  width: 32px;
+  height: 32px;
+  margin-right: 10px;
+}
+
+.username {
+  font-weight: bold;
+}
+
+.dropdown {
+  padding: 20px;
+  background-color: #f9fafc;
 }
 </style>
