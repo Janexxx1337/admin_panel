@@ -20,9 +20,9 @@
 </template>
 
 <script setup>
-import { useAdminLogin } from '@/composables/admin/useAdminLogin.js';
+import {useAdminLogin} from '@/composables/admin/useAdminLogin.js';
 
-const { username, password, error, successMessage, login } = useAdminLogin();
+const {username, password, error, successMessage, login} = useAdminLogin();
 </script>
 
 <style scoped>

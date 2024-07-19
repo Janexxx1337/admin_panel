@@ -92,7 +92,7 @@ import { onMounted } from 'vue';
 import { useUser } from '@/composables/users/card/useUser';
 import { useRoute } from 'vue-router';
 
-const { user, balanceAmount, fetchUser, banUser, unbanUser, updateBalance, notificationMessage, showNotification } = useUser();
+const { user, balanceAmount, fetchUser, banUser, unbanUser, updateBalance, notificationMessage, showNotification, notificationTitle } = useUser();
 const route = useRoute();
 
 onMounted(() => {

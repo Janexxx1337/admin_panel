@@ -8,31 +8,14 @@ export function useAdminLogin() {
     const error = ref(null);
     const successMessage = ref(null);
 
-    async function login() {
-        try {
-            const response = await fetch('http://localhost:8000/admin/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    username: username.value,
-                    password: password.value,
-                }),
-                credentials: 'include', // This will include the cookies in the request
-            });
+    function login() {
+        if (username.value === '123' && password.value === '123') {
+            successMessage.value = 'Успешный вход';
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
-            successMessage.value = data.message;
-
-            // После успешного входа перезагружаем страницу
-            window.location.href = '/users';
-        } catch (err) {
-            error.value = 'Failed to login: ' + err.message;
+            // Перенаправление после успешного входа
+            router.push('/users');
+        } else {
+            error.value = 'Неправильный логин или пароль';
         }
     }
 

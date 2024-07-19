@@ -32,22 +32,22 @@
         </template>
       </el-menu-item>
 
+      <template #title>
+        <span class="material-icons me-2">sports_esports</span>
+        <span>Игры</span>
+      </template>
+      <el-menu-item index="/wheelgames">
         <template #title>
-          <span class="material-icons me-2">sports_esports</span>
-          <span>Игры</span>
+          <span class="material-symbols-rounded me-2">attractions</span>
+          <span>Wheel</span>
         </template>
-        <el-menu-item index="/wheelgames">
-          <template #title>
-            <span class="material-symbols-rounded me-2">attractions</span>
-            <span>Wheel</span>
-          </template>
-        </el-menu-item>
-        <el-menu-item index="/coinflipgames">
-          <template #title>
-            <span class="material-icons me-2">monetization_on</span>
-            <span>Coinflip</span>
-          </template>
-        </el-menu-item>
+      </el-menu-item>
+      <el-menu-item index="/coinflipgames">
+        <template #title>
+          <span class="material-icons me-2">monetization_on</span>
+          <span>Coinflip</span>
+        </template>
+      </el-menu-item>
     </el-menu>
     <hr>
     <div class="dropdown">

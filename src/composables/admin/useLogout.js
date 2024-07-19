@@ -1,26 +1,17 @@
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 export function useAuth() {
     const router = useRouter();
+    const isAuthenticated = ref(true);
 
-    async function logout() {
-        try {
-            const response = await fetch('http://localhost:8000/admin/logout', {
-                method: 'POST',
-                credentials: 'include'
-            });
-
-            if (response.ok) {
-                window.location.href = '/admin';
-            } else {
-                console.error('Failed to logout');
-            }
-        } catch (err) {
-            console.error('Error during logout:', err);
-        }
+    function logout() {
+        isAuthenticated.value = false;
+        router.push('/admin');
     }
 
     return {
+        isAuthenticated,
         logout
     };
 }
