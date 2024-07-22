@@ -1,21 +1,37 @@
 import { createRouter, createWebHistory } from 'vue-router';
+
 import Login from '@/components/views/Login.vue';
 import UsersTable from '@/components/views/UsersTable.vue';
 import Deposits from '@/components/views/Deposits.vue';
+
 import UserCard from '@/components/views/UserCard.vue';
 import Withdrawals from '@/components/views/Withdrawals.vue';
-import WheelGameList from '@/components/views/Games/WheelGameList.vue';
-import CoinflipGameList from '@/components/views/Games/CoinflipGameList.vue';
-import WheelGameDetail from '@/components/views/Games/WheelGameDetail.vue';
-import CoinflipGameDetail from '@/components/views/Games/CoinflipGameDetail.vue';
+import WheelGameList from '@/components/views/Games/Wheel/WheelGameList.vue';
+
+import CoinflipGameList from '@/components/views/Games/CoinFlip/CoinflipGameList.vue';
+import WheelGameDetail from '@/components/views/Games/Wheel/WheelGameDetail.vue';
+import CoinflipGameDetail from '@/components/views/Games/CoinFlip/CoinflipGameDetail.vue';
+
 import Transactions from '@/components/views/Transactions.vue';
 import TransactionDetail from "@/components/views/TransactionDetail.vue";
+import ClassicGames from '@/components/views/Games/Classic/ClassicGames.vue';
+import ClassicGameDetail from '@/components/views/Games/Classic/ClassicGameDetail.vue';
 
 const routes = [
     {
         path: '/admin',
         name: 'Login',
         component: Login,
+    },
+    {
+        path: '/classicgames',
+        name: 'ClassicGames',
+        component: ClassicGames,
+    },
+    {
+        path: '/classicgames/:id',
+        name: 'ClassicGameDetail',
+        component: ClassicGameDetail,
     },
     {
         path: '/withdrawals',

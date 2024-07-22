@@ -1,5 +1,9 @@
 <template>
   <div class="container mt-4">
+    <el-button @click="goBack" class="back-button">
+      <span class="material-symbols-outlined">arrow_back</span>
+      <span>Назад</span>
+    </el-button>
     <el-card v-if="user" shadow="hover">
       <div slot="header" class="card-header">
         <div class="user-info">
@@ -90,15 +94,20 @@
 <script setup>
 import { onMounted } from 'vue';
 import { useUser } from '@/composables/users/card/useUser';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 const { user, balanceAmount, fetchUser, banUser, unbanUser, updateBalance, notificationMessage, showNotification, notificationTitle } = useUser();
 const route = useRoute();
+const router = useRouter();
 
 onMounted(() => {
   const userId = route.params.id;
   fetchUser(userId);
 });
+
+function goBack() {
+  router.back();
+}
 </script>
 
 <style scoped>
@@ -130,5 +139,28 @@ onMounted(() => {
 
 .mt-3 {
   margin-top: 1rem;
+}
+
+.back-button {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  background-color: #409eff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.back-button:hover {
+  background-color: #66b1ff;
+}
+
+.back-button .material-symbols-outlined {
+  margin-right: 8px;
 }
 </style>

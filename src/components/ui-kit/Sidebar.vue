@@ -31,23 +31,30 @@
           <span>Транзакции</span>
         </template>
       </el-menu-item>
-
-      <template #title>
-        <span class="material-icons me-2">sports_esports</span>
-        <span>Игры</span>
-      </template>
-      <el-menu-item index="/wheelgames">
+      <el-submenu index="games">
         <template #title>
-          <span class="material-symbols-rounded me-2">attractions</span>
-          <span>Wheel</span>
+          <span class="material-icons me-2">sports_esports</span>
+          <span>Игры</span>
         </template>
-      </el-menu-item>
-      <el-menu-item index="/coinflipgames">
-        <template #title>
-          <span class="material-icons me-2">monetization_on</span>
-          <span>Coinflip</span>
-        </template>
-      </el-menu-item>
+        <el-menu-item index="/wheelgames">
+          <template #title>
+            <span class="material-symbols-rounded me-2">attractions</span>
+            <span>Wheel</span>
+          </template>
+        </el-menu-item>
+        <el-menu-item index="/coinflipgames">
+          <template #title>
+            <span class="material-icons me-2">monetization_on</span>
+            <span>Coinflip</span>
+          </template>
+        </el-menu-item>
+        <el-menu-item index="/classicgames">
+          <template #title>
+            <span class="material-icons me-2">casino</span>
+            <span>Classic</span>
+          </template>
+        </el-menu-item>
+      </el-submenu>
     </el-menu>
     <hr>
     <div class="dropdown">
@@ -85,7 +92,8 @@ const { logout } = useAuth();
   border-right: none;
 }
 
-.el-menu-item, .el-sub-menu {
+.el-menu-item,
+.el-sub-menu {
   padding: 0 20px;
 }
 
@@ -100,10 +108,6 @@ const { logout } = useAuth();
   width: 32px;
   height: 32px;
   margin-right: 10px;
-}
-
-.username {
-  font-weight: bold;
 }
 
 .dropdown {

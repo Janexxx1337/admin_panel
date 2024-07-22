@@ -23,16 +23,7 @@ export const wheelGamesData = {
         {
             game_id: 2,
             date: '2024-07-16T14:20:00',
-            x2_wins: [
-                { image_url: 'https://via.placeholder.com/100', name: 'Item 6', rarity: 'Common', price: 150 },
-            ],
-            x3_wins: [],
-            x5_wins: [
-                { image_url: 'https://via.placeholder.com/100', name: 'Item 7', rarity: 'Epic', price: 350 },
-            ],
-            x50_wins: [
-                { image_url: 'https://via.placeholder.com/100', name: 'Item 8', rarity: 'Legendary', price: 750 },
-            ],
+            Bank: '1500$',
             players: 3,
             winner: 'STEAM_0:1:87654321',
         },
