@@ -9,7 +9,7 @@
       <el-table-column prop="players" label="Players" sortable></el-table-column>
       <el-table-column prop="bank" label="Bank" sortable>
         <template #default="scope">
-          1500$
+          {{ scope.row.game_value }}$
         </template>
       </el-table-column>
       <el-table-column prop="winner" label="Winner" sortable>
@@ -36,7 +36,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import {computed} from 'vue';
 
 const props = defineProps({
   data: Array,
@@ -75,10 +75,6 @@ const paginatedData = computed(() => {
   const start = (props.currentPage - 1) * props.pageSize;
   return filteredGames.value.slice(start, start + props.pageSize);
 });
-
-const calculateTotalPrice = (items) => {
-  return items.reduce((total, item) => total + (item.price || 0), 0);
-};
 
 const handlePageChange = (page) => {
   emit('update:currentPage', page);

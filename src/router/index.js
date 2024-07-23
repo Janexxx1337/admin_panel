@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import {createRouter, createWebHistory} from 'vue-router';
 
 import Login from '@/components/views/Login.vue';
 import UsersTable from '@/components/views/UsersTable.vue';
@@ -18,6 +18,10 @@ import ClassicGames from '@/components/views/Games/Classic/ClassicGames.vue';
 import ClassicGameDetail from '@/components/views/Games/Classic/ClassicGameDetail.vue';
 
 const routes = [
+    {
+        path: '/',
+        redirect: '/admin'
+    },
     {
         path: '/admin',
         name: 'Login',

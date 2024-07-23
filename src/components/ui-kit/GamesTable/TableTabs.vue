@@ -93,7 +93,10 @@ import { ref, computed, watch } from 'vue';
 
 const props = defineProps({
   groupedBets: Array,
-  pageSize: Number,
+  pageSize: {
+    type: Number,
+    default: 10
+  },
   winningGroupedBets: Array,
   selectedItems: Array,
   currentPage: Number,
