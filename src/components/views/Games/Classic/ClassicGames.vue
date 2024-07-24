@@ -1,7 +1,7 @@
 <template>
   <el-container class="mt-4 container">
     <el-header>
-      <h1>Coinflip Games</h1>
+      <h1>Classic Games</h1>
     </el-header>
 
     <FilterPanel
@@ -21,8 +21,8 @@
           :currentPage="currentPage"
           :filterType="filterType"
           :filterDate="filterDate"
-          :routeName="'CoinflipGameDetail'"
-          :routeIdKey="'id'"
+          :routeName="'ClassicGameDetail'"
+          :routeIdKey="'game_id'"
           @update:currentPage="handleCurrentChange"
       />
     </div>
@@ -31,12 +31,12 @@
 
 <script setup>
 import { ref } from 'vue';
-import { coinflipGamesData } from '@/data/CoinFlip/CoinflipGames';
+import { classicGamesData } from '@/data/Classic/ClassicData';
 import FilterPanel from '@/components/ui-kit/FilterPanel.vue';
 import LoadingComponent from '@/components/ui-kit/LoadingComponent.vue';
 import TableList from '@/components/ui-kit/GamesTable/TableList.vue';
 
-const games = ref([...coinflipGamesData.completedGames, ...coinflipGamesData.activeGames]);
+const games = ref([...classicGamesData.completedGames, ...classicGamesData.activeGames]);
 const loading = ref(false);
 const pageSize = ref(10);
 const currentPage = ref(1);

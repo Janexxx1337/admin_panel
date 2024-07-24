@@ -31,14 +31,14 @@
 
 <script setup>
 import { ref } from 'vue';
-import { coinflipGamesData } from '@/data/CoinFlip/CoinflipGames.js';
+import { coinflipGamesData } from '@/data/CoinFlip/CoinflipGames';
 import FilterPanel from '@/components/ui-kit/FilterPanel.vue';
 import LoadingComponent from '@/components/ui-kit/LoadingComponent.vue';
 import TableList from '@/components/ui-kit/GamesTable/TableList.vue';
 
 const games = ref([...coinflipGamesData.completedGames, ...coinflipGamesData.activeGames]);
 const loading = ref(false);
-const pageSize = ref(2);
+const pageSize = ref(10);
 const currentPage = ref(1);
 const filterType = ref('all');
 const filterDate = ref([]);

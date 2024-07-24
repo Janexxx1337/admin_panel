@@ -38,7 +38,7 @@ import TableList from '@/components/ui-kit/GamesTable/TableList.vue';
 
 const games = ref([...wheelGamesData.completedGames, ...wheelGamesData.activeGames]);
 const loading = ref(false);
-const pageSize = ref(2);
+const pageSize = ref(10);
 const currentPage = ref(1);
 const filterType = ref('all');
 const filterDate = ref([]);
