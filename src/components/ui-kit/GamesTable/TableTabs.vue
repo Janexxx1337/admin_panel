@@ -8,7 +8,7 @@
           <el-collapse>
             <el-collapse-item
                 v-for="(betGroup, index) in pagedGroupedBets"
-                :title="`Ставка ${betGroup.bet} - Игрок: ${betGroup.items[0]?.steamID}`"
+                :title="getTitle(betGroup, index)"
                 :name="index"
                 :key="index"
             >
@@ -48,7 +48,7 @@
           <el-collapse>
             <el-collapse-item
                 v-for="(betGroup, index) in pagedWinningGroupedBets"
-                :title="`Ставка ${betGroup.bet} - Игрок: ${betGroup.items[0]?.steamID}`"
+                :title="getTitle(betGroup, index)"
                 :name="index"
                 :key="index"
             >
@@ -90,6 +90,7 @@
 
 <script setup>
 import { ref, computed, watch } from 'vue';
+import { useRoute } from 'vue-router';
 
 const props = defineProps({
   groupedBets: Array,
@@ -107,6 +108,9 @@ const props = defineProps({
 const emit = defineEmits(['update:activeTab', 'update:currentPage', 'update:winningPage', 'update:selectedItems']);
 
 const selectedRow = ref(null);
+const route = useRoute();
+
+console.log('Current route:', route);
 
 const pagedGroupedBets = computed(() => {
   const start = (props.currentPage - 1) * props.pageSize;
@@ -150,6 +154,32 @@ function getRowClassName({ row }) {
 
 function calculateTotalAmount(items) {
   return items.reduce((total, item) => total + item.amount, 0);
+}
+
+function getRandomSector() {
+  const sectors = ['X2', 'X3', 'X5', 'X50'];
+  return sectors[Math.floor(Math.random() * sectors.length)];
+}
+
+function getRandomCoefficient() {
+  return (Math.random() * (56.6 - 1.1) + 1.1).toFixed(1);
+}
+
+function getTitle(betGroup, index) {
+  const baseTitle = `Ставка: - Игрок: ${betGroup.items[0]?.steamID} - Общая стоимость: ${calculateTotalAmount(betGroup.items)}$`;
+  let additionalInfo = '';
+
+  console.log('route.name:', route.name);
+
+  if (route.name === 'CoinflipGameDetail') {
+    additionalInfo = index % 2 === 0 ? 'Сторона: T' : 'Сторона: CT';
+  } else if (route.name === 'another') {
+    additionalInfo = `Сектор: ${getRandomSector()}`;
+  } else if (route.name === 'CrashGameDetail') {
+    additionalInfo = `- Коэффициент: ${getRandomCoefficient()}`;
+  }
+
+  return `${baseTitle} ${additionalInfo}`;
 }
 </script>
 
