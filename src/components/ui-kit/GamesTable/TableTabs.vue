@@ -169,7 +169,7 @@ function calculateTotalAmount(items) {
 }
 
 .table {
-  margin-top: 12px;
+  margin-top: 32px;
 }
 
 :deep(.el-tabs--border-card>.el-tabs__header) {

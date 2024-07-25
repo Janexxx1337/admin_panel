@@ -1,8 +1,10 @@
 <template>
+<div class="back">
   <el-button @click="goBack" class="back-button">
     <span class="material-symbols-outlined">arrow_back</span>
     <span>Назад</span>
   </el-button>
+</div>
 </template>
 
 <script setup>
@@ -36,5 +38,9 @@ function goBack() {
 
 .back-button .material-symbols-outlined {
   margin-right: 8px;
+}
+
+.back {
+  margin: 10px 0;
 }
 </style>
