@@ -2,8 +2,8 @@
   <div class="table">
     <el-main>
       <el-tabs :model-value="activeTab" @update:model-value="$emit('update:activeTab', $event)" type="border-card">
+        <!-- Таблица ставок -->
         <el-tab-pane label="Таблица ставок" name="bets">
-          <el-divider></el-divider>
           <h2>Таблица ставок</h2>
           <el-collapse>
             <el-collapse-item
@@ -43,6 +43,8 @@
               @current-change="handlePageChange"
           ></el-pagination>
         </el-tab-pane>
+
+        <!-- Выигрышные ставки -->
         <el-tab-pane label="Выигрышные ставки" name="winning-bets">
           <h2>Выигрышные ставки</h2>
           <el-collapse>
@@ -83,6 +85,48 @@
               @current-change="handleWinningPageChange"
           ></el-pagination>
         </el-tab-pane>
+
+        <!-- Проигрышные ставки -->
+        <el-tab-pane v-if="route.name === 'CrashGameDetail'" label="Проигрышные ставки" name="losing-bets">
+          <h2>Проигрышные ставки</h2>
+          <el-collapse>
+            <el-collapse-item
+                v-for="(betGroup, index) in pagedLosingGroupedBets"
+                :title="getTitle(betGroup, index)"
+                :name="index"
+                :key="index"
+            >
+              <el-table
+                  :data="betGroup.items || []"
+                  style="width: 100%"
+                  @row-click="selectRow"
+                  :row-class-name="getRowClassName"
+                  stripe
+                  border
+              >
+                <el-table-column prop="weapon_id" label="ID предмета"></el-table-column>
+                <el-table-column prop="weapon_img" label="Предмет">
+                  <template v-slot="scope">
+                    <img :src="scope.row.weapon_img" alt="item" class="table-item-image" />
+                  </template>
+                </el-table-column>
+                <el-table-column prop="amount" label="Стоимость предмета ($)"></el-table-column>
+                <el-table-column prop="time" label="Время ставки"></el-table-column>
+              </el-table>
+              <div class="table-footer">
+                <strong>Общая стоимость: {{ calculateTotalAmount(betGroup.items) }}$</strong>
+              </div>
+            </el-collapse-item>
+          </el-collapse>
+          <el-pagination
+              background
+              layout="prev, pager, next"
+              :total="losingGroupedBets.length"
+              :page-size="pageSize"
+              v-if="losingGroupedBets.length > pageSize"
+              @current-change="handleLosingPageChange"
+          ></el-pagination>
+        </el-tab-pane>
       </el-tabs>
     </el-main>
   </div>
@@ -99,13 +143,51 @@ const props = defineProps({
     default: 10
   },
   winningGroupedBets: Array,
+  losingGroupedBets: {
+    type: Array,
+    default: () => [
+      {
+        items: [
+          {
+            weapon_id: '11124',
+            weapon_img: 'https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpoo6m1FBRp3_bGcjhQ08mlhJO0k_jzNKLummJW4NE_iLGVpN-n3Qfs-RFtY2DzIo-TIFM8Ml7Zqwfow7js08W-vprAn3I16T5iuygX9mc8ew',
+            amount: 150,
+            time: '2024-07-15T12:35:00',
+            steamID: 'STEAM_0:1:12345679'
+          },
+          {
+            weapon_id: '11125',
+            weapon_img: 'https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpoo6m1FBRp3_bGcjhQ08mlhJO0k_jzNKLummJW4NE_iLGVpN-n3Qfs-RFtY2DzIo-TIFM8Ml7Zqwfow7js08W-vprAn3I16T5iuygX9mc8ew',
+            amount: 200,
+            time: '2024-07-15T12:45:00',
+            steamID: 'STEAM_0:1:12345679'
+          },
+        ],
+      },
+      {
+        items: [
+          {
+            weapon_id: '11126',
+            weapon_img: 'https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpoo6m1FBRp3_bGcjhQ08mlhJO0k_jzNKLummJW4NE_iLGVpN-n3Qfs-RFtY2DzIo-TIFM8Ml7Zqwfow7js08W-vprAn3I16T5iuygX9mc8ew',
+            amount: 100,
+            time: '2024-07-15T12:55:00',
+            steamID: 'STEAM_0:1:12345679'
+          },
+        ],
+      },
+    ]
+  },
   selectedItems: Array,
   currentPage: Number,
   winningPage: Number,
+  losingPage: {
+    type: Number,
+    default: 1
+  },
   activeTab: String
 });
 
-const emit = defineEmits(['update:activeTab', 'update:currentPage', 'update:winningPage', 'update:selectedItems']);
+const emit = defineEmits(['update:activeTab', 'update:currentPage', 'update:winningPage', 'update:losingPage', 'update:selectedItems']);
 
 const selectedRow = ref(null);
 const route = useRoute();
@@ -124,12 +206,24 @@ const pagedWinningGroupedBets = computed(() => {
   return props.winningGroupedBets.slice(start, end);
 });
 
+const pagedLosingGroupedBets = computed(() => {
+  console.log('Computing pagedLosingGroupedBets:', props.losingGroupedBets); // Логирование
+  if (!props.losingGroupedBets) return [];
+  const start = (props.losingPage - 1) * props.pageSize;
+  const end = start + props.pageSize;
+  return props.losingGroupedBets.slice(start, end);
+});
+
 watch(pagedGroupedBets, () => {
   console.log("pagedGroupedBets updated: ", pagedGroupedBets.value);
 });
 
 watch(pagedWinningGroupedBets, () => {
   console.log("pagedWinningGroupedBets updated: ", pagedWinningGroupedBets.value);
+});
+
+watch(pagedLosingGroupedBets, () => {
+  console.log("pagedLosingGroupedBets updated: ", pagedLosingGroupedBets.value);
 });
 
 function handlePageChange(page) {
@@ -140,6 +234,10 @@ function handleWinningPageChange(page) {
   emit('update:winningPage', page);
 }
 
+function handleLosingPageChange(page) {
+  emit('update:losingPage', page);
+}
+
 function selectRow(row) {
   selectedRow.value = row;
   emit('update:selectedItems', Array(row.quantity).fill().map((_, index) => ({
@@ -148,7 +246,7 @@ function selectRow(row) {
   })));
 }
 
-function getRowClassName({ row }) {
+function getRowClassName({row}) {
   return row === selectedRow.value ? 'row-active' : '';
 }
 

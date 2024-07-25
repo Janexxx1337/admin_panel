@@ -1,4 +1,4 @@
-const placeholderItem = 'https://via.placeholder.com/100';
+const item = 'https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpoo6m1FBRp3_bGcjhQ08mlhJO0k_jzNKLummJW4NE_iLGVpN-n3Qfs-RFtY2DzIo-TIFM8Ml7Zqwfow7js08W-vprAn3I16T5iuygX9mc8ew';
 
 function generateCrashGameData(count, startDate, isCompleted = true) {
     const games = [];
@@ -8,22 +8,83 @@ function generateCrashGameData(count, startDate, isCompleted = true) {
 
         const game = {
             game_id: i,
-            date: "25.07.2024, 14:49:46", // Преобразуем дату в читаемый формат
-            game_value: 300 + (i * 10),
+            date: date.toISOString(),
             x2_wins: [
-                { weapon_id: i * 2 - 1, weapon_img: placeholderItem, amount: 100, time: date.toLocaleString() },
-                { weapon_id: i * 2, weapon_img: placeholderItem, amount: 200, time: date.toLocaleString() },
+                {
+                    steamID: `STEAM_0:1:${12345678 + i}`,
+                    quantity: 2,
+                    status: 'won',
+                    time: date.toISOString(),
+                    total: 200,
+                    weapon_id: '11123',
+                    weapon_img: item,
+                    amount: 300,
+                },
             ],
             x3_wins: [
-                { weapon_id: i * 3 - 2, weapon_img: placeholderItem, amount: 300, time: date.toLocaleString() },
-                { weapon_id: i * 3 - 1, weapon_img: placeholderItem, amount: 400, time: date.toLocaleString() },
+                {
+                    steamID: `STEAM_0:1:${12345678 + i}`,
+                    quantity: 2,
+                    status: 'won',
+                    time: date.toISOString(),
+                    total: 200,
+                    weapon_id: '11123',
+                    weapon_img: item,
+                    amount: 300,
+                },
             ],
             x5_wins: [
-                { weapon_id: i * 5, weapon_img: placeholderItem, amount: 500, time: date.toLocaleString() },
+                {
+                    steamID: `STEAM_0:1:${12345678 + i}`,
+                    quantity: 2,
+                    status: 'won',
+                    time: date.toISOString(),
+                    total: 200,
+                    weapon_id: '11123',
+                    weapon_img: item,
+                    amount: 300,
+                },
             ],
-            x50_wins: [],
+            x50_wins: [
+                {
+                    steamID: `STEAM_0:1:${12345678 + i}`,
+                    quantity: 2,
+                    status: 'won',
+                    time: date.toISOString(),
+                    total: 200,
+                    weapon_id: '11123',
+                    weapon_img: item,
+                    amount: 300,
+                },
+            ],
+            x2_losses: [
+                {
+                    steamID: `STEAM_0:1:${22345678 + i}`,
+                    quantity: 1,
+                    status: 'lost',
+                    time: date.toISOString(),
+                    total: 100,
+                    weapon_id: '11124',
+                    weapon_img: item,
+                    amount: 150,
+                },
+            ],
+            x3_losses: [
+                {
+                    steamID: `STEAM_0:1:${22345678 + i}`,
+                    quantity: 1,
+                    status: 'lost',
+                    time: date.toISOString(),
+                    total: 100,
+                    weapon_id: '11124',
+                    weapon_img: item,
+                    amount: 150,
+                },
+            ],
             players: 4 + i,
             winner: `STEAM_0:1:${12345678 + i}`,
+            winner_ticket: 123456 + i,
+            game_value: 1000 + (i * 100),
         };
 
         if (!isCompleted) {
