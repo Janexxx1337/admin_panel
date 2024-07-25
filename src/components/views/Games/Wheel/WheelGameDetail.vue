@@ -32,13 +32,10 @@ const winningPage = ref(1);
 const bets = ['X2', 'X3', 'X5', 'X50'];
 
 const mainCards = [
-  {title: 'Игра', value: '#2299292'},
-  {title: 'БАНК', value: '150000044$'},
-  {title: 'Айтемы', value: '34'},
-  {title: 'Игроки', value: '15'},
-  {title: 'Выиграшнная ставка', value: 'X3'},
-  {title: 'Выиграшнный билет', value: '150000044$'},
-  {title: 'Хеш игры', value: '423434394939BFjdfnfdjdfi992'}
+  { title: 'Игра', value: '#2299292' },
+  { title: 'Дата начала', value: new Date().toLocaleString() },
+  { title: 'Дата завершения', value: new Date(new Date().getTime() + 1000 * 60 * 60 * 24).toLocaleString() },
+  { title: 'Количество игроков', value: '15' },
 ];
 
 const groupedBets = computed(() => items);

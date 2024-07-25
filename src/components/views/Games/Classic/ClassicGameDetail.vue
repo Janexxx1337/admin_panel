@@ -42,11 +42,10 @@ const game = computed(() => {
 const mainCards = computed(() => {
   if (!game.value) return [];
   return [
-    { title: 'Игра', value: `#${game.value.game_id}` },
-    { title: 'Дата', value: new Date(game.value.date).toLocaleString() },
-    { title: 'Игроки', value: game.value.players },
-    { title: 'Выиграшнная ставка', value: game.value.winner_ticket || 'N/A' },
-    { title: 'Итоговая сумма', value: `${game.value.game_value}$` }
+    { title: 'Игра', value: '#2299292' },
+    { title: 'Дата начала', value: new Date().toLocaleString() },
+    { title: 'Дата завершения', value: new Date(new Date().getTime() + 1000 * 60 * 60 * 24).toLocaleString() },
+    { title: 'Количество игроков', value: '15' },
   ];
 });
 

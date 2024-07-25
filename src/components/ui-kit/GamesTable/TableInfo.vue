@@ -1,5 +1,5 @@
 <template>
-  <el-aside width="300px">
+  <el-aside width="350px">
     <div class="inventory">
       <BackButton />
       <div class="inventory_bets">
@@ -34,6 +34,7 @@ const props = defineProps({
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 0.5rem;
 }
 
 .inventory_items img {
@@ -46,7 +47,7 @@ const props = defineProps({
 
 ul {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.2rem;
   padding: 0;
 }
 
