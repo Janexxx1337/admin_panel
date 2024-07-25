@@ -7,7 +7,7 @@
           <div class="game_details-cards">
             <el-card class="game-card" v-for="(card, index) in mainCards" :key="index">
               <div class="game-card-content">
-                <span class="game-card-title">{{ card.title }}</span>
+                <span class="game-card-title">{{ card.title }}:</span>
                 <span>{{ card.value }}</span>
               </div>
             </el-card>
@@ -29,6 +29,13 @@ const props = defineProps({
 </script>
 
 <style scoped>
+
+.game-card-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .inventory_items img {
   width: 25%;
   border: 1px solid black;
