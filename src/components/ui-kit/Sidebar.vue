@@ -54,6 +54,12 @@
             <span>Classic</span>
           </template>
         </el-menu-item>
+        <el-menu-item index="/crashgames">
+          <template #title>
+            <span class="material-icons me-2">flash_on</span>
+            <span>Crash</span>
+          </template>
+        </el-menu-item>
       </el-submenu>
     </el-menu>
     <hr>

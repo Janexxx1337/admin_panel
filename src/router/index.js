@@ -16,6 +16,8 @@ import Transactions from '@/components/views/Transactions.vue';
 import TransactionDetail from "@/components/views/TransactionDetail.vue";
 import ClassicGames from '@/components/views/Games/Classic/ClassicGames.vue';
 import ClassicGameDetail from '@/components/views/Games/Classic/ClassicGameDetail.vue';
+import CrashGames from "@/components/views/Games/Crash/CrashGames.vue";
+import CrashGameDetail from "@/components/views/Games/Crash/CrashGameDetail.vue";
 
 const routes = [
     {
@@ -37,6 +39,18 @@ const routes = [
         name: 'ClassicGameDetail',
         component: ClassicGameDetail,
     },
+
+    {
+        path: '/crashgames',
+        name: 'CrashGames',
+        component: CrashGames,
+    },
+    {
+        path: '/crashgames/:id',
+        name: 'CrashGameDetail',
+        component: CrashGameDetail,
+    },
+
     {
         path: '/withdrawals',
         name: 'Withdrawals',
