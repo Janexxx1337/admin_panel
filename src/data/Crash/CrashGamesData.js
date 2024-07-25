@@ -8,18 +8,18 @@ function generateCrashGameData(count, startDate, isCompleted = true) {
 
         const game = {
             game_id: i,
-            date: date.toISOString(),
+            date: "25.07.2024, 14:49:46", // Преобразуем дату в читаемый формат
             game_value: 300 + (i * 10),
             x2_wins: [
-                { image_url: placeholderItem, name: `Item ${i * 2 - 1}`, rarity: 'Common', price: 100 },
-                { image_url: placeholderItem, name: `Item ${i * 2}`, rarity: 'Rare', price: 200 },
+                { weapon_id: i * 2 - 1, weapon_img: placeholderItem, amount: 100, time: date.toLocaleString() },
+                { weapon_id: i * 2, weapon_img: placeholderItem, amount: 200, time: date.toLocaleString() },
             ],
             x3_wins: [
-                { image_url: placeholderItem, name: `Item ${i * 3 - 2}`, rarity: 'Epic', price: 300 },
-                { image_url: placeholderItem, name: `Item ${i * 3 - 1}`, rarity: 'Legendary', price: 400 },
+                { weapon_id: i * 3 - 2, weapon_img: placeholderItem, amount: 300, time: date.toLocaleString() },
+                { weapon_id: i * 3 - 1, weapon_img: placeholderItem, amount: 400, time: date.toLocaleString() },
             ],
             x5_wins: [
-                { image_url: placeholderItem, name: `Item ${i * 5}`, rarity: 'Common', price: 500 },
+                { weapon_id: i * 5, weapon_img: placeholderItem, amount: 500, time: date.toLocaleString() },
             ],
             x50_wins: [],
             players: 4 + i,

@@ -15,14 +15,13 @@
         @update:selectedItems="selectedItems = $event"
     />
   </div>
-
 </template>
 
 <script setup>
 import TableDetails from '@/components/ui-kit/GamesTable/TableDetails.vue';
-import { ref, computed } from 'vue';
-import { useRoute } from 'vue-router';
-import { classicGamesData } from '@/data/Classic/ClassicData.js';
+import {ref, computed, watch} from 'vue';
+import {useRoute} from 'vue-router';
+import {classicGamesData} from '@/data/Classic/ClassicData.js';
 
 const route = useRoute();
 const gameId = route.params.id;
@@ -42,12 +41,11 @@ const game = computed(() => {
 const mainCards = computed(() => {
   if (!game.value) return [];
   return [
-    { title: 'Игра', value: '#2299292' },
-    { title: 'Дата начала', value: new Date().toLocaleString() },
-    { title: 'Дата завершения', value: new Date(new Date().getTime() + 1000 * 60 * 60 * 24).toLocaleString() },
-    { title: 'Количество игроков', value: '15' },
+    {title: 'Игра', value: '#2299292'},
+    {title: 'Дата начала', value: new Date().toLocaleString()},
+    {title: 'Дата завершения', value: new Date(new Date().getTime() + 1000 * 60 * 60 * 24).toLocaleString()},
+    {title: 'Количество игроков', value: '15'},
   ];
-
 });
 
 const groupedBets = computed(() => {
@@ -55,13 +53,27 @@ const groupedBets = computed(() => {
   const groups = [];
   ['x2_wins', 'x3_wins', 'x5_wins', 'x50_wins'].forEach(type => {
     if (game.value[type] && game.value[type].length > 0) {
-      groups.push({ bet: type.toUpperCase(), items: game.value[type] });
+      groups.push({bet: type.toUpperCase(), items: game.value[type]});
     }
   });
+  console.log('groupedBets:', groups); // Логирование данных для groupedBets
   return groups;
 });
 
-const winningGroupedBets = computed(() => groupedBets.value);
+const winningGroupedBets = computed(() => {
+  const result = groupedBets.value;
+  console.log('winningGroupedBets:', result); // Логирование данных для winningGroupedBets
+  return result;
+});
+
+watch(groupedBets, () => {
+  console.log("pagedGroupedBets updated: ", groupedBets.value);
+});
+
+watch(winningGroupedBets, () => {
+  console.log("pagedWinningGroupedBets updated: ", winningGroupedBets.value);
+});
+
 </script>
 
 <style scoped>
