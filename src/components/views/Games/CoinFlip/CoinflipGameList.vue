@@ -5,10 +5,10 @@
     </el-header>
 
     <FilterPanel
-        :filterType="filterType"
-        :filterDate="filterDate"
-        @update:filterType="filterType = $event"
-        @update:filterDate="filterDate = $event"
+        :filter-type="filterType"
+        :filter-date="filterDate"
+        @update:filter-type="filterType = $event"
+        @update:filter-date="filterDate = $event"
     />
 
     <LoadingComponent v-if="loading" />
@@ -16,14 +16,14 @@
     <div v-else>
       <TableList
           :data="games"
-          :totalItems="games.length"
-          :pageSize="pageSize"
-          :currentPage="currentPage"
-          :filterType="filterType"
-          :filterDate="filterDate"
-          :routeName="'CoinflipGameDetail'"
-          :routeIdKey="'id'"
-          @update:currentPage="handleCurrentChange"
+          :total-items="games.length"
+          :page-size="pageSize"
+          :current-page="currentPage"
+          :filter-type="filterType"
+          :filter-date="filterDate"
+          :route-name="'CoinflipGameDetail'"
+          :route-id-key="'id'"
+          @update:current-page="handleCurrentChange"
       />
     </div>
   </el-container>

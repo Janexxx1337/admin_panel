@@ -11,11 +11,11 @@
         :winning-page="winningPage"
         :losing-page="losingPage"
         :active-tab="activeTab"
-        @update:activeTab="activeTab = $event"
-        @update:currentPage="currentPage = $event"
-        @update:winningPage="winningPage = $event"
-        @update:losingPage="losingPage = $event"
-        @update:selectedItems="selectedItems = $event"
+        @update:active-tab="activeTab = $event"
+        @update:current-page="currentPage = $event"
+        @update:winning-page="winningPage = $event"
+        @update:losing-page="losingPage = $event"
+        @update:selected-items="selectedItems = $event"
     />
   </div>
 </template>

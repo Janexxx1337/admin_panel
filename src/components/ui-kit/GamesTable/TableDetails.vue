@@ -13,10 +13,10 @@
           :current-page="currentPage"
           :winning-page="winningPage"
           :active-tab="activeTab"
-          @update:activeTab="updateActiveTab"
-          @update:currentPage="updateCurrentPage"
-          @update:winningPage="updateWinningPage"
-          @update:selectedItems="updateSelectedItems"
+          @update:active-tab="updateActiveTab"
+          @update:current-page="updateCurrentPage"
+          @update:winning-page="updateWinningPage"
+          @update:selected-items="updateSelectedItems"
       />
     </el-container>
   </div>

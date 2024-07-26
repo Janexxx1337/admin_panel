@@ -1,66 +1,32 @@
 <template>
   <el-aside width="240px" class="sidebar">
     <el-menu
-        class="el-menu-vertical-demo"
-        router
-        background-color="#f9fafc"
-        text-color="#333"
-        active-text-color="#409EFF"
+      class="el-menu-vertical-demo"
+      router
+      background-color="#f9fafc"
+      text-color="#333"
+      active-text-color="#409EFF"
     >
-      <el-menu-item index="/users">
-        <template #title>
-          <span class="material-icons me-2">people</span>
-          <span>Пользователи</span>
-        </template>
-      </el-menu-item>
-      <el-menu-item index="/deposits">
-        <template #title>
-          <span class="material-icons me-2">account_balance_wallet</span>
-          <span>Депозиты</span>
-        </template>
-      </el-menu-item>
-      <el-menu-item index="/withdrawals">
-        <template #title>
-          <span class="material-icons me-2">credit_card</span>
-          <span>Выводы</span>
-        </template>
-      </el-menu-item>
-      <el-menu-item index="/transactions">
-        <template #title>
-          <span class="material-icons me-2">bar_chart</span>
-          <span>Транзакции</span>
-        </template>
-      </el-menu-item>
-      <el-submenu index="games">
-        <template #title>
-          <span class="material-icons me-2">sports_esports</span>
-          <span>Игры</span>
-        </template>
-        <el-menu-item index="/wheelgames">
+      <template v-for="item in menuItems" :key="item.index">
+        <el-menu-item v-if="!item.children" :index="item.index">
           <template #title>
-            <span class="material-symbols-rounded me-2">attractions</span>
-            <span>Wheel</span>
+            <span :class="item.class">{{ item.icon }}</span>
+            <span>{{ item.label }}</span>
           </template>
         </el-menu-item>
-        <el-menu-item index="/coinflipgames">
+        <el-submenu v-else :index="item.index" :opened="isSubmenuOpened(item.index)" @open="handleOpen(item.index)" @close="handleClose(item.index)">
           <template #title>
-            <span class="material-icons me-2">monetization_on</span>
-            <span>Coinflip</span>
+            <span :class="item.class">{{ item.icon }}</span>
+            <span>{{ item.label }}</span>
           </template>
-        </el-menu-item>
-        <el-menu-item index="/classicgames">
-          <template #title>
-            <span class="material-icons me-2">casino</span>
-            <span>Classic</span>
-          </template>
-        </el-menu-item>
-        <el-menu-item index="/crashgames">
-          <template #title>
-            <span class="material-icons me-2">flash_on</span>
-            <span>Crash</span>
-          </template>
-        </el-menu-item>
-      </el-submenu>
+          <el-menu-item v-for="subItem in item.children" :key="subItem.index" :index="subItem.index">
+            <template #title>
+              <span :class="subItem.class">{{ subItem.icon }}</span>
+              <span>{{ subItem.label }}</span>
+            </template>
+          </el-menu-item>
+        </el-submenu>
+      </template>
     </el-menu>
     <hr>
     <div class="dropdown">
@@ -80,9 +46,57 @@
 </template>
 
 <script setup>
+import { ref, onMounted, watch } from 'vue';
 import { useAuth } from "@/composables/admin/useLogout.js";
 
 const { logout } = useAuth();
+
+const menuItems = ref([
+  { index: "/users", label: "Пользователи", icon: "people", class: "material-icons" },
+  { index: "/deposits", label: "Депозиты", icon: "account_balance_wallet", class: "material-icons" },
+  { index: "/withdrawals", label: "Выводы", icon: "credit_card", class: "material-icons" },
+  { index: "/transactions", label: "Транзакции", icon: "bar_chart", class: "material-icons" },
+  { 
+    index: "games", 
+    label: "Игры", 
+    icon: "sports_esports", 
+    class: "material-icons",
+    children: [
+      { index: "/wheelgames", label: "Wheel", icon: "attractions", class: "material-symbols-rounded" },
+      { index: "/coinflipgames", label: "Coinflip", icon: "monetization_on", class: "material-icons" },
+      { index: "/classicgames", label: "Classic", icon: "casino", class: "material-icons" },
+      { index: "/crashgames", label: "Crash", icon: "flash_on", class: "material-icons" },
+    ]
+  },
+]);
+
+const openedSubmenus = ref(JSON.parse(localStorage.getItem('openedSubmenus')) || []);
+
+const handleOpen = (submenu) => {
+  if (!openedSubmenus.value.includes(submenu)) {
+    openedSubmenus.value.push(submenu);
+  }
+};
+
+const handleClose = (submenu) => {
+  const index = openedSubmenus.value.indexOf(submenu);
+  if (index !== -1) {
+    openedSubmenus.value.splice(index, 1);
+  }
+};
+
+const isSubmenuOpened = (submenu) => {
+  return openedSubmenus.value.includes(submenu);
+};
+
+watch(openedSubmenus, (newVal) => {
+  localStorage.setItem('openedSubmenus', JSON.stringify(newVal));
+}, { deep: true });
+
+onMounted(() => {
+  // Sync opened submenus on initial load
+  openedSubmenus.value = JSON.parse(localStorage.getItem('openedSubmenus')) || [];
+});
 </script>
 
 <style scoped>
@@ -104,7 +118,6 @@ const { logout } = useAuth();
 }
 
 .el-menu-item .material-icons,
-.el-menu-item .material-symbols-rounded,
 .el-sub-menu .material-icons {
   font-size: 24px;
   margin-right: 10px;
