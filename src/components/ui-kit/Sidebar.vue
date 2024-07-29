@@ -56,10 +56,10 @@ const menuItems = ref([
   { index: "/deposits", label: "Депозиты", icon: "account_balance_wallet", class: "material-icons" },
   { index: "/withdrawals", label: "Выводы", icon: "credit_card", class: "material-icons" },
   { index: "/transactions", label: "Транзакции", icon: "bar_chart", class: "material-icons" },
-  { 
-    index: "games", 
-    label: "Игры", 
-    icon: "sports_esports", 
+  {
+    index: "games",
+    label: "Игры",
+    icon: "sports_esports",
     class: "material-icons",
     children: [
       { index: "/wheelgames", label: "Wheel", icon: "attractions", class: "material-symbols-rounded" },
@@ -118,7 +118,7 @@ onMounted(() => {
 }
 
 .el-menu-item .material-icons,
-.el-sub-menu .material-icons {
+.el-sub-menu .material-icons,.material-symbols-rounded {
   font-size: 24px;
   margin-right: 10px;
 }
