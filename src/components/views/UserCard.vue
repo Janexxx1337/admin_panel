@@ -25,16 +25,16 @@
               </el-tag>
             </p>
             <div class="text-center">
-              <el-button v-if="!user.banned" type="danger" @click="banUser">Забанить пользователя</el-button>
-              <el-button v-if="user.banned" type="success" @click="unbanUser">Разбанить пользователя</el-button>
+              <el-button v-if="!user.banned" type="danger" @click="handleBanUser">Забанить пользователя</el-button>
+              <el-button v-if="user.banned" type="success" @click="handleUnbanUser">Разбанить пользователя</el-button>
             </div>
           </el-card>
           <el-card>
             <h5 class="card-title">Управление балансом</h5>
             <el-input-number v-model="balanceAmount" placeholder="Сумма" class="w-100"></el-input-number>
             <div class="mt-3">
-              <el-button type="success" @click="updateBalance('credit')">Начислить баланс</el-button>
-              <el-button type="warning" @click="updateBalance('debit')">Списать с баланса</el-button>
+              <el-button type="success" @click="handleUpdateBalance('credit')">Начислить баланс</el-button>
+              <el-button type="warning" @click="handleUpdateBalance('debit')">Списать с баланса</el-button>
             </div>
           </el-card>
         </el-col>
@@ -74,27 +74,17 @@
       </el-row>
     </el-card>
     <el-alert v-else title="Пользователь не найден" type="warning" show-icon></el-alert>
-
-    <!-- Toast Notification -->
-    <el-notification
-        v-if="showNotification"
-        :title="notificationTitle"
-        :message="notificationMessage"
-        type="success"
-        :duration="3000"
-        position="bottom-right"
-        @close="showNotification = false"
-    />
   </div>
 </template>
 
 <script setup>
 import { onMounted } from 'vue';
-import { useUser } from '@/composables/users/card/useUser';
 import { useRoute } from 'vue-router';
+import { ElNotification } from 'element-plus';
 import BackButton from '@/components/ui-kit/BackButton.vue';
+import { useUser } from '@/composables/users/card/useUser';
 
-const { user, balanceAmount, fetchUser, banUser, unbanUser, updateBalance, notificationMessage, showNotification, notificationTitle } = useUser();
+const { user, balanceAmount, fetchUser, banUser, unbanUser, updateBalance } = useUser();
 const route = useRoute();
 
 onMounted(() => {
@@ -102,6 +92,54 @@ onMounted(() => {
   fetchUser(userId);
 });
 
+function showSuccessNotification(title, message) {
+  ElNotification({
+    title: title,
+    message: message,
+    type: 'success',
+    position: 'bottom-right',
+    duration: 3000
+  });
+}
+
+function showErrorNotification(title, message) {
+  ElNotification({
+    title: title,
+    message: message,
+    type: 'error',
+    position: 'bottom-right',
+    duration: 3000
+  });
+}
+
+async function handleBanUser() {
+  try {
+    await banUser();
+    showSuccessNotification('Успех', 'Пользователь успешно забанен');
+  } catch (error) {
+    showErrorNotification('Ошибка', 'Не удалось забанить пользователя');
+  }
+}
+
+async function handleUnbanUser() {
+  try {
+    await unbanUser();
+    showSuccessNotification('Успех', 'Пользователь успешно разбанен');
+  } catch (error) {
+    showErrorNotification('Ошибка', 'Не удалось разбанить пользователя');
+  }
+}
+
+async function handleUpdateBalance(type) {
+  try {
+    await updateBalance(type);
+    const message = type === 'credit' ? 'Баланс успешно начислен' : 'Баланс успешно списан';
+    showSuccessNotification('Успех', message);
+  } catch (error) {
+    const message = type === 'credit' ? 'Не удалось начислить баланс' : 'Не удалось списать баланс';
+    showErrorNotification('Ошибка', message);
+  }
+}
 </script>
 
 <style scoped>
