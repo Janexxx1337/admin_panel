@@ -6,18 +6,18 @@
           {{ new Date(scope.row.date).toLocaleString() }}
         </template>
       </el-table-column>
-      <el-table-column prop="players" label="Players" sortable></el-table-column>
-      <el-table-column prop="bank" label="Bank" sortable>
+      <el-table-column prop="players" label="Игроки" sortable></el-table-column>
+      <el-table-column prop="bank" label="Банк" sortable>
         <template #default="scope">
           {{ scope.row.game_value }}$
         </template>
       </el-table-column>
-      <el-table-column prop="winner" label="Winner" sortable>
+      <el-table-column prop="winner" label="Победитель" sortable>
         <template #default="scope">
           {{ scope.row.winner || 'N/A' }}
         </template>
       </el-table-column>
-      <el-table-column label="Actions">
+      <el-table-column label="Действия">
         <template #default="scope">
           <router-link :to="{ name: routeName, params: { id: scope.row[routeIdKey] } }">
             <el-button type="primary">Детали</el-button>
@@ -84,5 +84,11 @@ const handlePageChange = (page) => {
 <style scoped>
 .item span {
   font-size: 14px;
+}
+
+:deep(.el-button) {
+  display: block;
+  margin: 0 auto;
+  width: 100%;
 }
 </style>

@@ -1,9 +1,6 @@
 <template>
   <div class="container mt-4">
-    <el-button @click="goBack" class="back-button">
-      <span class="material-symbols-outlined">arrow_back</span>
-      <span>Назад</span>
-    </el-button>
+    <BackButton />
     <el-card v-if="user" shadow="hover">
       <div slot="header" class="card-header">
         <div class="user-info">
@@ -94,20 +91,17 @@
 <script setup>
 import { onMounted } from 'vue';
 import { useUser } from '@/composables/users/card/useUser';
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
+import BackButton from '@/components/ui-kit/BackButton.vue';
 
 const { user, balanceAmount, fetchUser, banUser, unbanUser, updateBalance, notificationMessage, showNotification, notificationTitle } = useUser();
 const route = useRoute();
-const router = useRouter();
 
 onMounted(() => {
   const userId = route.params.id;
   fetchUser(userId);
 });
 
-function goBack() {
-  router.back();
-}
 </script>
 
 <style scoped>
