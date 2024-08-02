@@ -17,9 +17,20 @@
       </el-select>
     </div>
 
-    <el-table :data="filteredUsers" stripe border style="width: 100%">
+    <el-table :data="filteredUsers" stripe border>
       <el-table-column prop="id" label="#"></el-table-column>
-      <el-table-column prop="steam_id" label="Steam ID"></el-table-column>
+      <el-table-column prop="steam_id" label="Steam ID" style="font-size:12px;">
+        <template #default="scope">
+          <router-link
+              :to="{ name: 'UserCard', params: { id: 1 } }"
+              class="steam-link"
+          >
+          <span class="steam-id-text" :title="scope.row.steam_id">
+            {{ scope.row.steam_id }}
+          </span>
+          </router-link>
+        </template>
+      </el-table-column>
       <el-table-column prop="balance" label="Баланс"></el-table-column>
       <el-table-column label="Статус оплаты">
         <template #default="scope">
@@ -105,6 +116,25 @@ const filteredUsers = computed(() => {
 }
 
 .material-icons {
+  vertical-align: middle;
+}
+
+
+.steam-link {
+  color: #409eff;
+  text-decoration: none;
+}
+
+.steam-link:hover {
+  text-decoration: underline;
+}
+
+.steam-id-text {
+  display: inline-block;
+  max-width: 170px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   vertical-align: middle;
 }
 </style>

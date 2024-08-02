@@ -22,7 +22,7 @@
             </template>
           </el-table-column>
           <el-table-column prop="amount" label="Стоимость предмета ($)"></el-table-column>
-          <el-table-column prop="time" label="Время ставки"></el-table-column>
+          <el-table-column prop="time" label="Время ставки">15.07.2024</el-table-column>
         </el-table>
         <div class="table-footer">
           <strong>Общая стоимость: {{ calculateTotalAmount(betGroup.items) }}$</strong>

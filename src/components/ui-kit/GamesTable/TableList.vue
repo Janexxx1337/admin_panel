@@ -14,9 +14,16 @@
       </el-table-column>
       <el-table-column prop="winner" label="Победитель" sortable>
         <template #default="scope">
-          {{ scope.row.winner || 'N/A' }}
+          <router-link
+              :to="{ name: 'UserCard', params: { id: 1} }"
+              v-if="scope.row.winner"
+          >
+            {{ scope.row.winner }}
+          </router-link>
+          <span v-else>N/A</span>
         </template>
       </el-table-column>
+
       <el-table-column label="Действия">
         <template #default="scope">
           <router-link :to="{ name: routeName, params: { id: scope.row[routeIdKey] } }">

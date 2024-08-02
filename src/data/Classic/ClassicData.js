@@ -1,4 +1,25 @@
-const item = 'https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpoo6m1FBRp3_bGcjhQ08mlhJO0k_jzNKLummJW4NE_iLGVpN-n3Qfs-RFtY2DzIo-TIFM8Ml7Zqwfow7js08W-vprAn3I16T5iuygX9mc8ew';
+const item =
+    'https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpoo6m1FBRp3_bGcjhQ08mlhJO0k_jzNKLummJW4NE_iLGVpN-n3Qfs-RFtY2DzIo-TIFM8Ml7Zqwfow7js08W-vprAn3I16T5iuygX9mc8ew';
+
+// Массив с именами пользователей
+const userNames = [
+    'Alex',
+    'Chris',
+    'Jordan',
+    'Taylor',
+    'Morgan',
+    'Casey',
+    'Riley',
+    'Jamie',
+    'Avery',
+    'Peyton',
+];
+
+// Функция для случайного выбора имени из массива
+function getRandomUsername() {
+    const randomIndex = Math.floor(Math.random() * userNames.length);
+    return userNames[randomIndex];
+}
 
 function generateGameData(count, startDate, isCompleted = true) {
     const games = [];
@@ -6,12 +27,16 @@ function generateGameData(count, startDate, isCompleted = true) {
         const date = new Date(startDate);
         date.setHours(date.getHours() + i);
 
+        const steamID = `STEAM_0:1:${12345678 + i}`;
+        const username = getRandomUsername();
+        const steamIDWithUsername = `${steamID}|${username}`; // Включаем имя пользователя внутрь steamID
+
         const game = {
             game_id: i,
             date: date.toISOString(),
             x2_wins: [
                 {
-                    steamID: `STEAM_0:1:${12345678 + i}`,
+                    steamID: steamIDWithUsername,
                     quantity: 2,
                     status: 'won',
                     time: date.toISOString(),
@@ -23,7 +48,7 @@ function generateGameData(count, startDate, isCompleted = true) {
             ],
             x3_wins: [
                 {
-                    steamID: `STEAM_0:1:${12345678 + i}`,
+                    steamID: steamIDWithUsername,
                     quantity: 2,
                     status: 'won',
                     time: date.toISOString(),
@@ -35,7 +60,7 @@ function generateGameData(count, startDate, isCompleted = true) {
             ],
             x5_wins: [
                 {
-                    steamID: `STEAM_0:1:${12345678 + i}`,
+                    steamID: steamIDWithUsername,
                     quantity: 2,
                     status: 'won',
                     time: date.toISOString(),
@@ -47,7 +72,7 @@ function generateGameData(count, startDate, isCompleted = true) {
             ],
             x50_wins: [
                 {
-                    steamID: `STEAM_0:1:${12345678 + i}`,
+                    steamID: steamIDWithUsername,
                     quantity: 2,
                     status: 'won',
                     time: date.toISOString(),
@@ -58,9 +83,9 @@ function generateGameData(count, startDate, isCompleted = true) {
                 },
             ],
             players: 4 + i,
-            winner: `STEAM_0:1:${12345678 + i}`,
+            winner: steamIDWithUsername,
             winner_ticket: 123456 + i,
-            game_value: 1000 + (i * 100),
+            game_value: 1000 + i * 100,
         };
 
         if (!isCompleted) {
