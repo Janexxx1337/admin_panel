@@ -25,7 +25,18 @@
       <el-table-column prop="id" label="ID транзакции"></el-table-column>
       <el-table-column prop="date" label="Дата"></el-table-column>
       <el-table-column prop="type" label="Тип транзакции"></el-table-column>
-      <el-table-column prop="steamID" label="Steam ID"></el-table-column>
+      <el-table-column prop="steamID" label="Steam ID">
+        <template #default="scope">
+          <router-link
+              :to="{ name: 'UserCard', params: { id: 2 } }"
+              class="steam-link"
+          >
+          <span class="steam-id-text" :title="scope.row.steamID">
+            {{ scope.row.steamID }}
+          </span>
+          </router-link>
+        </template>
+      </el-table-column>
       <el-table-column label="Перейти">
         <template #default="scope">
           <router-link :to="{ name: 'TransactionDetail', params: { id: scope.row.id } }">

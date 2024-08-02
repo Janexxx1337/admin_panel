@@ -87,6 +87,16 @@
             </el-icon>
           </div>
         </template>
+        <template #default="scope">
+          <router-link
+              :to="{ name: 'UserCard', params: { id: 2} }"
+              class="steam-link"
+          >
+          <span class="steam-id-text" :title="scope.row.user_steam_id">
+            {{ scope.row.user_steam_id }}
+          </span>
+          </router-link>
+        </template>
       </el-table-column>
       <el-table-column prop="provider" label="Провайдер" sortable>
         <template #header="scope">

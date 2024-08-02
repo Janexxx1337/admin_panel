@@ -34,9 +34,19 @@
           {{ new Date(scope.row.date).toLocaleDateString() }}
         </template>
       </el-table-column>
-      <el-table-column prop="user_steam_id" label="Steam ID"></el-table-column>
+      <el-table-column prop="user_steam_id" label="Steam ID">
+        <template #default="scope">
+          <router-link
+              :to="{ name: 'UserCard', params: { id: 2} }"
+              class="steam-link"
+          >
+          <span class="steam-id-text" :title="scope.row.user_steam_id">
+            {{ scope.row.user_steam_id }}
+          </span>
+          </router-link>
+        </template>
+      </el-table-column>
     </el-table>
-
     <el-pagination
         layout="prev, pager, next"
         :total="totalPages * itemsPerPage"
