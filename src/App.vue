@@ -19,4 +19,9 @@ const showSidebar = computed(() => route.path !== '/admin');
 #app {
   display: flex;
 }
+
+.container {
+  max-width: 70%;
+  margin-right: 10%;
+}
 </style>
